@@ -371,7 +371,7 @@ Provider 并发 ≈ 并发 Run × 每 Run 同时模型调用数
 日 artifact ≈ 日 Run × 每 Run 平均 artifact 字节 × 保留系数
 ```
 
-示例：10 RPS、平均活跃 45 秒约 450 个活跃 Run。若 token delta 20 次/秒且全部持久化，会达到 9,000 writes/s；把 delta 合并为每 250 ms 一批并以 completed 快照收口，写放大显著降低。关键事件不可因背压丢弃；可合并的只有展示增量。
+示例：10 RPS、平均活跃 45 秒约 450 个活跃 Run。若 token delta 20 次/秒且全部持久化，会达到 9,000 writes/s；把 delta 合并为每 250 ms 一批并以 completed 快照收口，写入量会降低。控制事件不可因背压丢弃；可合并的只有展示增量。
 
 背压顺序：
 
@@ -448,10 +448,10 @@ architecture_evidence:
 - [ ] 能在图上指出至少五条信任边界，并说明跨边界数据和控制。
 - [ ] 能从一次点击追到 SDK、Runtime、Provider/Tool、Event、Trace、审计平台。
 - [ ] 能解释 domain event、trace、audit record 为什么不能混为一谈。
-- [ ] 能给出副作用前后崩溃的恢复算法，而不是笼统说“重试”。
+- [ ] 能给出副作用前后崩溃的恢复算法，不能只说“重试”。
 - [ ] 能说明 Hybrid 模式下云 Workflow 与本地 Activity 的断线语义。
 - [ ] 能用容量公式估算并识别 token delta 的写放大。
-- [ ] 能拿出契约测试、故障注入、SLO、runbook，而不仅是组件图。
+- [ ] 能拿出契约测试、故障注入、SLO、runbook，不能只提供组件图。
 
 ## 一手资料
 

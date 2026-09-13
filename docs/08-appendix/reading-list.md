@@ -1,6 +1,6 @@
 # 一手资料清单：按问题阅读
 
-官方文档说明产品用法，规范说明实现要求，论文解释设计原因。涉及版本的条目会注明版本或核验日期。
+官方文档说明产品用法，规范说明实现要求，论文解释设计原因。带版本的条目会注明版本或访问日期。
 
 ## 1. 三遍读法
 
@@ -64,7 +64,7 @@ open_questions:
 
 ## 3. OpenAI：Codex 与 Agents SDK
 
-> 易变产品资料。只从官方页面和官方仓库核验，不从博客二手摘要推断 API。
+> 产品 API 会变化。实现前以官方页面或仓库为准，博客只用来寻找关键词。
 
 ### 3.1 必读
 
@@ -72,7 +72,7 @@ open_questions:
    - **重点**：TypeScript/Python 的 thread start/continue/resume、进程/运行时前提、sandbox preset。
    - **读法**：把 provider thread ID 映射为 opaque adapter state；不要让它替代平台 `runId`。
    - **产出**：Codex adapter contract，至少测 resume、cancel、sandbox、错误映射。
-   - **页面记录**：2026-08-30 页面同时给出 TypeScript 与 Python 用法；开始实现时仍须再次核验。
+   - **页面记录**：2026-08-30 页面同时给出 TypeScript 与 Python 用法；实现时以锁定依赖和实际响应为准。
 
 2. [Codex App Server](https://developers.openai.com/codex/app-server)
    - **重点**：富客户端的认证、Thread/Turn/Item、审批与事件协议；区分 stdio、Unix socket 与仍处实验状态的远程 WebSocket。
@@ -133,7 +133,7 @@ open_questions:
 
 1. [MCP Specification — latest](https://modelcontextprotocol.io/specification/latest)
    - **性质**：规范入口；`latest` 会跳转到日期版本。
-   - **核验**：2026-08-30 跳转到 `2026-07-28`，实现时应记录实际版本而不是只写 latest。
+   - **版本**：2026-08-30 访问时跳转到 `2026-07-28`；实现时记录实际版本，不只写 `latest`。
    - **第一遍**：[Architecture（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/architecture)、[Versioning（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)。
    - **版本差异**：2026-07-28 版本把版本/身份/capability 放在每个请求的 `_meta`，并以 `server/discover` 做可选预发现；`initialize` 属于旧版兼容路径。采用其他版本时，以该版本规范为准。
    - **第二遍**：Base Protocol/Transport、Resources/Prompts/Tools、Cancellation/Progress/Error。
@@ -304,7 +304,7 @@ open_questions:
 | 模型质量 | 自己的版本化 eval | 官方 model card 仅做背景 |
 | 价格/可用区域 | 官方实时页面/账户控制台 | 不从旧笔记推断 |
 
-二手文章可以帮助发现关键词，但不能作为易变 API、限制、定价、权限语义的最终依据。
+二手文章可以帮助发现关键词，但 API、限制、定价和权限语义应以一手资料为准。
 
 ## 14. 阅读验收
 
@@ -314,4 +314,4 @@ open_questions:
 - [ ] 阅读至少三篇可靠性论文，并能用于一个 ADR，而不是背结论。
 - [ ] Desktop 产出 renderer→host→sandbox 威胁模型。
 - [ ] OTel 产出 span/metric/redaction 规范，domain event 明确分离。
-- [ ] 为易变事实保留一手来源、实际版本或核验日期，并在 Contract Test 或实验记录中注明适用范围。
+- [ ] 为会变化的事实保留一手来源、实际版本或访问日期，并在 Contract Test 或实验记录中注明适用范围。

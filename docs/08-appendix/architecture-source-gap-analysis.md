@@ -271,7 +271,7 @@ sequenceDiagram
 
 ## 8. Provider 能力与业务 Runtime 的边界
 
-截至 **2026-08-30**，官方资料给出的 Codex 集成面可以这样选择：
+按 **2026-08-30** 查阅的官方资料，Codex 集成面可按下表选择：
 
 | 集成面 | 官方定位 | 适用场景 | 企业层仍需补充 |
 |---|---|---|---|
@@ -280,7 +280,7 @@ sequenceDiagram
 | `codex exec` | 脚本/CI 非交互运行；JSONL 可消费运行事件 | shell pipeline、批处理 | 进程监督、幂等、断线恢复、结构化业务契约 |
 | Responses background mode | 异步启动并轮询模型 Response | 长模型调用 | 业务状态机、审批、外部工具账本、清理与保留 |
 
-官方当前说明：Codex App Server 的远程 WebSocket transport 仍属实验/不支持生产工作负载，因此不能把实验传输层当成既定生产 SLA；Codex SDK 的 TypeScript 库可启动、继续、恢复 thread；`codex exec --json` 产生 JSONL 事件；Codex 默认结合沙箱、审批和网络控制，具体行为随运行环境及配置而异。
+官方资料说明，Codex App Server 的远程 WebSocket transport 仍属实验/不支持生产工作负载，不能把它当成既定生产 SLA。Codex SDK 的 TypeScript 库可启动、继续、恢复 thread；`codex exec --json` 产生 JSONL 事件；Codex 默认结合沙箱、审批和网络控制，具体行为随运行环境及配置而异。
 
 来源：[Codex App Server](https://developers.openai.com/codex/app-server)、[Codex SDK](https://developers.openai.com/codex/codex-sdk)、[Non-interactive mode](https://developers.openai.com/codex/non-interactive-mode)、[Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security)。
 
@@ -300,13 +300,13 @@ flowchart LR
   O --> H[Pre-registered Customer Webhook]
 ```
 
-这里有三个不同的异步层：
+异步层分为三种：
 
 - Provider background：解决一次模型调用可能很久；
 - Runtime Task：解决跨模型、工具、审批、恢复和交付的业务生命周期；
 - 客户端通知：SSE/poll/webhook 只是读取 Task 事实的方式。
 
-OpenAI 官方 Background mode 当前支持异步创建并对 `queued`/`in_progress` 轮询，Webhook 要验证签名、快速返回，并可能在失败后重试和偶发重复。企业 Runtime 因此必须有 inbox 去重，不能在 HTTP handler 中直接执行业务效果。来源：[Background mode](https://developers.openai.com/api/docs/guides/background)、[Webhooks](https://developers.openai.com/api/docs/guides/webhooks)。
+OpenAI 官方 Background mode 支持异步创建并对 `queued`/`in_progress` 轮询。Webhook 要验证签名、快速返回，并考虑失败重试和重复投递；企业 Runtime 需要用 inbox 去重，不能在 HTTP handler 中直接执行业务效果。来源：[Background mode](https://developers.openai.com/api/docs/guides/background)、[Webhooks](https://developers.openai.com/api/docs/guides/webhooks)。
 
 SSE 的 `Last-Event-ID` 应映射为 Task 流内单调 cursor。若 cursor 已早于保留水位，返回明确的 snapshot/cursor-expired 协议（例如 `410 Gone` + snapshot URL），不要从任意剩余事件继续而制造缺口。
 
@@ -322,7 +322,7 @@ SSE 的 `Last-Event-ID` 应映射为 Task 流内单调 cursor。若 cursor 已�
 | Memory | 跨 Turn 的有用事实 | 可总结，但需来源与失效策略 | 取决于用途 |
 | Evidence | 测试、diff、artifact、外部回执 | 不可用摘要替代原件 | 是 |
 
-OpenAI 当前 Compaction 文档明确将 compaction item 描述为用于后续延续的 opaque 项；因此不能解析其内部内容来重建审批、预算、工具账本或合规证据。来源：[Compaction](https://developers.openai.com/api/docs/guides/compaction)。
+OpenAI 的 Compaction 文档将 compaction item 描述为供后续延续使用的 opaque 项；不能解析其内部内容来重建审批、预算、工具账本或合规证据。来源：[Compaction](https://developers.openai.com/api/docs/guides/compaction)。
 
 ## 11. Structured Outputs 的边界
 
@@ -344,7 +344,7 @@ function decodeStructured<T>(r: ProviderResponse, semanticCheck: (x: T) => void)
 
 ## 12. 覆盖矩阵外的横向依赖
 
-Runtime 还依赖一组系统外侧能力，单独看模型循环或任务状态机很容易漏掉它们：
+Runtime 还依赖一组系统外侧能力。只看模型循环或任务状态机，容易漏掉这些依赖：
 
 | 横向依赖 | 为什么重要 | 对应章节 |
 |---|---|---|
@@ -359,7 +359,7 @@ Runtime 还依赖一组系统外侧能力，单独看模型循环或任务状态
 
 ## 13. 用纵向链路验证矩阵
 
-选择一条纵向链路，把相关阶段串起来实现，再注入故障。下面三条链路分别覆盖只读分析、受控修改和长任务恢复：
+把相关阶段串成一条纵向链路，再注入故障。下面给出只读分析、受控修改和长任务恢复三条链路：
 
 ### 切片 A：只读仓库分析
 
@@ -377,7 +377,7 @@ Runtime 还依赖一组系统外侧能力，单独看模型循环或任务状态
 
 `queued task → leased worker → provider/tools → effect ledger → PR/deploy → webhook/outbox → reconcile → cleanup`
 
-验收：在每个外部调用前后强杀进程，系统都不会静默重复副作用；无法确认时明确展示 unknown。
+验收：在每个外部调用前后强杀进程，系统都不会静默重复副作用；无法确认时展示 unknown。
 
 ## 14. 评审用不变量清单
 
@@ -412,4 +412,4 @@ Runtime 还依赖一组系统外侧能力，单独看模型循环或任务状态
 7. 演示 SSE 断线恢复、Webhook 重复和 DLQ replay；
 8. 输出 DeliveryBundle，明确区分 `succeeded`、`partial`、`unverified`、`outcome_unknown`。
 
-完成这组材料后，应能说明 Agent Runtime 如何运营，而不只停留在组件框图层面。
+完成这组材料后，应能说明 Agent Runtime 如何运营，不能只停留在组件框图层面。

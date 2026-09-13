@@ -1,6 +1,6 @@
 # Framework Adapter 实战：统一暂停、审批与事件契约
 
-OpenAI Agents SDK（TypeScript）和 LangGraph（Python）可以接入同一 Runtime 边界，再由契约测试验证暂停、跨进程恢复、工具拦截、取消和事件顺序。示例针对 **2026-08-30** 对照过的 API；生产代码仍需锁定依赖与 Agent Definition 版本。
+OpenAI Agents SDK（TypeScript）和 LangGraph（Python）可以接入同一 Runtime 边界，再由契约测试验证暂停、跨进程恢复、工具拦截、取消和事件顺序。示例基于 **2026-08-30** 查阅的 API；生产代码仍需锁定依赖与 Agent Definition 版本。
 
 ## 1. 先确定所有框架都不能越过的边界
 
@@ -89,13 +89,13 @@ interface ToolGateway {
 // 伪 SQL：INSERT receipt(key,status) ... ON CONFLICT DO NOTHING，赢家执行并提交结果。
 ```
 
-“先审批、后执行”有一个关键竞态：审批后文件可能已被别人修改。对 `apply_patch` 应把目标文件基线 hash、规范化 patch hash 和仓库/worktree ID 一并放进 args 摘要；不一致就生成新的 proposal，不复用旧批准。
+“先审批、后执行”有一个常见竞态：审批后文件可能已被别人修改。对 `apply_patch` 应把目标文件基线 hash、规范化 patch hash 和仓库/worktree ID 一并放进 args 摘要；不一致就生成新的 proposal，不复用旧批准。
 
 ## 3. OpenAI Agents SDK TypeScript adapter
 
 ### 3.1 安装与稳定性边界
 
-官方当前安装方式是 `npm install @openai/agents zod`，文档使用 Zod v4。示例采用 `Agent`、`tool`、`run`、`RunState.fromString()`、streaming `interruptions`；请在仓库中提交 lockfile，并把实际解析出的 SDK 版本写入 checkpoint，而不是依赖本文日期。
+示例安装 `@openai/agents` 和 `zod`，并按文档使用 Zod v4。示例采用 `Agent`、`tool`、`run`、`RunState.fromString()` 和 streaming `interruptions`；仓库应提交 lockfile，并把实际解析出的 SDK 版本写入 checkpoint。恢复时按该版本加载，不以文章日期代替版本信息。
 
 ```bash
 mkdir oa-adapter-lab && cd oa-adapter-lab
@@ -325,7 +325,7 @@ class OpenAIAgentsPort implements AgentPort {
 
 上例需要按锁定版本补写两个窄 helper：`normalizeToolCall/normalizeToolOutput` 只访问该版本导出的 item union，并对未知 variant fail closed。当前公开 `RunState.getInterruptions()`、`state.approve/reject`、`RunState.fromString` 就是恢复 seam，**不要读取 `_` 前缀内部字段**。helper 与 SDK 类型一起编译、用官方 `ScriptedModel` 做确定性测试，避免靠真实模型碰运气。
 
-更重要的是恢复边界：序列化状态可能含应用 context；不得放 token/密钥。长时间 pending 的状态必须跟随原 SDK 与原 agent graph 版本恢复。官方甚至建议需要并行恢复旧任务时用 package alias 同时安装两版 SDK。若反序列化不能证明 output ownership，SDK 会 fail closed；平台应把旧任务转人工或从安全输入新开 run，不能强制篡改 state。
+恢复边界是：序列化状态可能含应用 context，但不得放 token/密钥。长时间 pending 的状态必须跟随原 SDK 与原 agent graph 版本恢复。官方建议需要并行恢复旧任务时用 package alias 同时安装两版 SDK。若反序列化不能证明 output ownership，SDK 会 fail closed；平台应把旧任务转人工或从安全输入新开 run，不能强制篡改 state。
 
 ## 4. LangGraph Python adapter
 
@@ -545,7 +545,7 @@ effect: 0 before approval; 1 after approval; replay/reconcile remains 1
 
 MAF Workflow 的 `RequestPort`（Python 为 `ctx.request_info()`/response handler）天然对应 `approval.required`：adapter 把 `RequestInfoEvent` 规范化并持久化平台审批记录，将审批答复变成 workflow response。官方说明 pending requests 会进入 checkpoint，恢复时重新出现；这正适合“至少一次送达 + approvalId 去重”，不代表可以执行两次工具。
 
-MAF checkpoint 在 superstep 末产生；官方当前说明 Python 1.13.0 起还会在首个 superstep 前、request response 投递时生成 entry checkpoint。升级时必须保留 workflow topology 和稳定 executor identity，并用旧版本 fixture 回放。工具仍包装为 Tool Gateway，approval-required tool 只负责暂停，真正 function invocation 前再次鉴权。adapter 映射：
+MAF checkpoint 在 superstep 末产生；查阅的文档说明，Python 1.13.0 起还会在首个 superstep 前、request response 投递时生成 entry checkpoint。升级时必须保留 workflow topology 和稳定 executor identity，并用旧版本 fixture 回放。工具仍包装为 Tool Gateway，approval-required tool 只负责暂停，真正 function invocation 前再次鉴权。adapter 映射：
 
 | MAF 表面 | AgentPort |
 |---|---|
@@ -559,9 +559,9 @@ checkpoint storage 是信任边界。官方说明部分 Python file/Cosmos 实�
 
 ### 6.2 Google Agent Development Kit
 
-ADK adapter 以 `SessionService` 的 session/invocation 标识建立 cursor，消费 Event 流并通过 `get_function_calls()`、function response、final response 等正规接口归一。`before_tool_callback` 是 Tool Gateway 拦截点：可在调用前执行 policy/schema 检查或返回替代结果，从而阻止原工具；需要人工批准的 custom tool 使用官方 tool confirmation，将 confirmation request 映射为 `approval.required`。
+ADK adapter 以 `SessionService` 的 session/invocation 标识建立 cursor，消费 Event 流并通过 `get_function_calls()`、function response、final response 等正规接口归一。`before_tool_callback` 是 Tool Gateway 拦截点：可在调用前执行 policy/schema 检查或返回替代结果，阻止原工具；需要人工批准的 custom tool 使用官方 tool confirmation，将 confirmation request 映射为 `approval.required`。
 
-当前官方文档把 tool confirmation 标为 experimental，并列出最低版本（Python 1.14、TypeScript 0.2、Go 0.3）；Python resumability 文档要求 1.16+，且明确指出 ADK Web/CLI 暂不支持 resume。因而 capability 不能谎报：只有你选择的 Runner、SessionService、App `resumability_config` 组合通过“杀进程后恢复”测试，才声明 `durable_resume=true`。否则 adapter 仍满足单次运行事件合同，但等待审批必须交给外部 workflow 或返回“不支持长暂停”。
+查阅的文档将 tool confirmation 标为 experimental，并列出最低版本（Python 1.14、TypeScript 0.2、Go 0.3）；Python resumability 文档要求 1.16+，且明确指出 ADK Web/CLI 暂不支持 resume。只有你选择的 Runner、SessionService、App `resumability_config` 组合通过“杀进程后恢复”测试，才可声明 `durable_resume=true`。否则 adapter 仍满足单次运行事件合同，但等待审批必须交给外部 workflow 或返回“不支持长暂停”。
 
 MAF/ADK 都必须跑第 5 节同一 suite。框架特有能力只放在 capability：
 

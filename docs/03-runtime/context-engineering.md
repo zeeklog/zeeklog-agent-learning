@@ -157,7 +157,7 @@ function topologicalOrder(items: ContextItem[]): ContextItem[] {
 }
 ```
 
-贪心并非全局最优，但解释性好。依赖闭包负责“选中完整”，拓扑排序负责“依赖先于使用者”；二者不能用一次按 kind 排序替代。每个 `tool_result.dependencies` 必须包含对应 `tool_call`，若某 Provider 要求二者相邻，则 Adapter 在最终消息编译阶段将它们作为原子组并再次校验。更重要的是输出 selection manifest：item id、来源、token、得分、排除原因。它可进入 Trace，却不必记录敏感正文。
+贪心并非全局最优，但解释性好。依赖闭包负责“选中完整”，拓扑排序负责“依赖先于使用者”；二者不能用一次按 kind 排序替代。每个 `tool_result.dependencies` 必须包含对应 `tool_call`，若某 Provider 要求二者相邻，则 Adapter 在最终消息编译阶段将它们作为原子组并再次校验。还要输出 selection manifest：item id、来源、token、得分、排除原因。它可进入 Trace，却不必记录敏感正文。
 
 ## 6. Compaction：有损操作必须显式
 

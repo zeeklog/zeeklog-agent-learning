@@ -1,6 +1,6 @@
 # 任务控制平面：请求、调度与耐久交付
 
-> 这是**企业参考设计**，不是任何厂商产品的默认实现或 SLA。它针对进程崩溃、客户端断线、重复请求、租约过期和回调失败，给出可解释、可恢复、可对账的处理方式。示例使用 TypeScript 和 PostgreSQL 风格 SQL；实现时要固定数据库、队列和一致性边界。
+> 这是**企业参考设计**，不是任何厂商产品的默认实现或 SLA。下文处理进程崩溃、客户端断线、重复请求、租约过期和回调失败。示例使用 TypeScript 和 PostgreSQL 风格 SQL；实现时要固定数据库、队列和一致性边界。
 
 ## 1. 控制平面真正控制什么
 
@@ -26,7 +26,7 @@ flowchart LR
 
 控制平面至少承担：请求归一化、身份绑定、幂等、配额和预算预留、任务/事件持久化、公平调度、租约、取消、恢复、结果查询与耐久交付。它**不**把模型响应当业务任务状态，也不直接执行绕过策略的工具。
 
-三个先决语义：
+先记住三点：
 
 - 客户端断开只终止订阅或同步等待，不隐式取消任务；取消必须是独立命令。
 - Worker 是可替换的，不等于执行环境无状态；工作区、检查点和外部效果需要独立生命周期。
@@ -106,7 +106,7 @@ async function createOnce(env: RequestEnvelope, intent: CreateIntent) {
 
 ## 3. Task、Thread、Turn、Step 的基数
 
-强制 `Task 1:1 Thread` 会让一个持续对话无法运行多个任务；强制 `Task 1:1 Turn` 又无法表达审批回复、补充信息和恢复。建议模型为：
+`Task 1:1 Thread` 会限制持续对话运行多个任务，`Task 1:1 Turn` 也无法表达审批回复、补充信息和恢复。可按以下关系建模：
 
 - **Thread**：一个持续会话边界，包含多个 Turn 和多个 Task。
 - **Turn**：一次参与者输入到系统交还控制或进入后台的交互段。
@@ -153,7 +153,7 @@ CREATE TABLE steps (
 
 ## 4. 准入是一次资源交易
 
-准入不能只做 QPS 限流。它要同时检查身份、数据区、release/policy、风险、租户并发、模型容量和多维预算，并在**同一事务**中创建任务、预留预算和写入 outbox。
+准入同时检查身份、数据区、release/policy、风险、租户并发、模型容量和多维预算，并在**同一事务**中创建任务、预留预算和写入 outbox。
 
 ```ts
 type BudgetVector = {
@@ -204,7 +204,7 @@ COMMIT;
 
 ### 4.1 运行中预算状态
 
-阈值必须是 release/policy 的版本化配置。可参考以下行为，不应把百分比当通用标准：
+阈值由 release/policy 版本化配置。下面是行为示例，百分比不能直接当作通用标准：
 
 | 消耗比例（参考） | 控制动作 |
 | --- | --- |
@@ -213,11 +213,11 @@ COMMIT;
 | 95% | 强制收敛：只做验收、checkpoint、清理和交付 |
 | 工作预算耗尽 | 在安全边界停止，使用 finish reserve 生成部分交付 |
 
-“达到 100% 再停”是坏契约，因为已经没有资源保存检查点、撤销凭据和解释结果。已开始的不可分割外部事务也不能在中间硬切断；每次授权效果前应确认该效果和恢复/清理所需预算仍可用。
+达到 100% 才停止会耗尽保存检查点、撤销凭据和交付结果所需的资源。已开始的不可分割外部事务也不能在中间硬切断；每次授权效果前应确认该效果和恢复/清理所需预算仍可用。
 
 ## 5. Tenant-fair 调度
 
-全局优先队列会被高流量租户或滥用 `priority=high` 的客户端占满。推荐分层：先按 cell/数据区/能力匹配，再在租户队列间做 Weighted Deficit Round Robin（WDRR）或近似公平排队，最后在租户内部按服务等级、截止时间和 aging 排序。
+全局优先队列会被高流量租户或滥用 `priority=high` 的客户端占满。调度分三层：先按 cell/数据区/能力匹配；租户队列之间使用 Weighted Deficit Round Robin（WDRR）或近似公平排队；租户内部再按服务等级、截止时间和 aging 排序。
 
 ```ts
 type TenantQueue = {
@@ -292,7 +292,7 @@ Heartbeat 只在 `(task_id, lease_owner, lease_epoch)` 全匹配时续期。使�
 
 ## 7. 状态机与“结果未知”
 
-不要用一个枚举同时表达生命周期、业务结果和副作用确定性。建议保存：
+生命周期、业务结果和副作用确定性应分别保存：
 
 ```ts
 type Lifecycle =
@@ -334,7 +334,7 @@ stateDiagram-v2
   CANCELING --> CANCELED: local execution stopped; certainty recorded
 ```
 
-`BLOCKED` 不是终态：用户补充信息、批准或管理员解除策略阻塞后可重新排队。`OUTCOME_UNKNOWN` 也不是普通失败，它要求查询外部系统、验证真实资源或人工裁决。取消后仍可能存在 `effectCertainty=unknown`；“本地进程已停”不能证明远端请求未生效。
+`BLOCKED` 表示等待用户补充信息、批准或策略解除，之后可重新排队。`OUTCOME_UNKNOWN` 表示需要查询外部系统、验证真实资源或人工裁决。取消后仍可能存在 `effectCertainty=unknown`；“本地进程已停”不能证明远端请求未生效。
 
 取消分三层：soft 在下一个安全点停止并 checkpoint；hard 终止模型流、工具进程和子代理；emergency 额外撤销凭据、关闭 egress 并隔离环境。每层都应追加事件并设置 deadline；超过 deadline 不能伪报 `CANCELED` 已无外部效果。
 
@@ -351,11 +351,11 @@ GET    /v1/tasks/{task_id}/delivery       # 最终或部分 DeliveryBundle
 
 `POST /tasks` 要求 `Idempotency-Key`；冲突返回 409，准入拒绝使用稳定错误码并说明哪一维受限。`mode=sync_wait` 只让 Gateway 在一个上限内等待同一个 durable Task：超时返回 `202 + taskId`，不创建第二个任务，也不取消原任务。
 
-取消和恢复是命令，不是客户端直接更新状态。命令带 `If-Match`/`expectedVersion` 防止旧 UI 覆盖新状态；重复相同命令返回原 command 结果。API 返回的 `state` 是事件投影，最终真相仍是任务事件与 effect receipt。
+取消和恢复都通过命令完成，客户端不能直接更新状态。命令带 `If-Match`/`expectedVersion` 防止旧 UI 覆盖新状态；重复相同命令返回原 command 结果。API 返回的 `state` 是事件投影，任务事件与 effect receipt 才是依据。
 
 ## 9. SSE 的断点续传协议
 
-SSE 的 `id` 应是任务作用域内的耐久游标，例如 `taskId:seq`，不是随机 event UUID。服务端先建立实时订阅并记下 watermark，再回放 `(afterSeq, watermark]`，最后消费 `> watermark` 的实时事件，避免“查历史与订阅之间”丢消息。
+SSE 的 `id` 应是任务作用域内的耐久游标，例如 `taskId:seq`，不要使用随机 event UUID。服务端先建立实时订阅并记下 watermark，再回放 `(afterSeq, watermark]`，然后消费 `> watermark` 的实时事件，避免查历史和建立订阅之间丢消息。
 
 ```http
 GET /v1/tasks/tsk_7/events
@@ -412,7 +412,7 @@ function signature(secret: Buffer, timestamp: string, rawBody: Buffer) {
 
 签名覆盖时间戳和**原始字节**；接收方先检查时间窗口，再恒定时间比较签名，最后以 `(endpoint, deliveryId)` 去重。若同 delivery ID 的 payload digest 不同，必须告警而非覆盖。
 
-Dispatcher 从 outbox 至少一次投递，使用指数退避、抖动和最大尝试；明确的 2xx 才标记 delivered。4xx 是否重试要按错误分类，429/5xx/超时通常可重试。尝试耗尽进入 DLQ；人工 replay 保持原 `deliveryId` 并新增 `replayId`，不能伪装成新业务事件。
+Dispatcher 从 outbox 至少一次投递，使用指数退避、抖动和最大尝试次数；只有明确的 2xx 才标记 delivered。4xx 是否重试按错误分类，429/5xx/超时通常可重试。尝试耗尽进入 DLQ；人工 replay 保持原 `deliveryId` 并新增 `replayId`，不能伪装成新业务事件。
 
 ```sql
 CREATE TABLE webhook_inbox (
@@ -510,7 +510,7 @@ await db.transaction(async tx => {
 2. 实现两租户 WDRR 调度器，构造 100:1 流量并画出每租户 queue-delay 分布。
 3. 实现 `claim/heartbeat/append`，故意冻结旧 Worker，证明新 epoch 后旧 Worker 无法推进。
 4. 实现从历史事件切到实时订阅的 SSE，并加入 compaction snapshot 与 `410` 恢复路径。
-5. 实现签名 webhook、接收方 Inbox、DLQ/replay；在远端成功而响应丢失时进入 reconcile，而不是盲重试。
+5. 实现签名 webhook、接收方 Inbox、DLQ/replay；远端成功而响应丢失时进入 reconcile。
 6. 给系统增加 `OUTCOME_UNKNOWN` 运维页面：展示请求摘要、effect key、外部引用、最后一次网络证据和允许的人工裁决动作。
 
 完成标准：随机 kill 测试 1,000 次后任务投影可由事件重建；不会观察到重复的非幂等测试效果；取消与回调失败均能诚实表达确定性；一个租户饱和不使另一个租户永久饥饿。

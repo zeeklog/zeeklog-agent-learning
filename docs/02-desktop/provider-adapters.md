@@ -1,10 +1,10 @@
 # 桌面端 Provider 适配：Codex SDK 与 Claude Agent SDK
 
-> Provider SDK 属于易变的基础设施细节。UI 和 Runtime 只依赖本地的 Session、Turn、Event、Approval 合约；官方 SDK 只出现在 adapter 包内。
+> Provider SDK 是适配层的实现细节。UI 和 Runtime 只依赖本地的 Session、Turn、Event、Approval 合约；官方 SDK 只出现在 adapter 包内。
 
-## 1. 先澄清名称
+## 1. 名称与边界
 
-截至 2026-08，以下四个名称经常被混用：
+按 2026-08 的资料，这四个名称经常被混用：
 
 - OpenAI **Codex SDK**：TypeScript 包 `@openai/codex-sdk`，用于在 Node 服务端控制本地 Codex thread；官方公开最小用法是 `new Codex()`、`startThread()`、`resumeThread(id)`、`thread.run()`。官方也提供稳定 Python 包 `openai-codex`，通过本地 app-server JSON-RPC 工作。
 - Anthropic **Claude Agent SDK**：原“Claude Code SDK”已更名，TypeScript 包 `@anthropic-ai/claude-agent-sdk`；复用 Claude Code 的 agent loop、工具、上下文、hooks、permissions、sessions、MCP 等。
@@ -130,11 +130,11 @@ Session 恢复、fork、streaming input、checkpoint 等能力也按 capability 
 
 两类 Agent SDK 都适合放 Runtime sidecar/Utility Process，不进 Renderer，也不与窗口生命周期绑定。Supervisor 启动时记录：adapter 包版本、底层 CLI/runtime 版本、二进制哈希、Node 版本、协议版本。限制环境变量白名单、cwd 与可见路径；stdout 只传 framed protocol，stderr 进入脱敏日志。
 
-升级采用兼容矩阵而非“永远 latest”：例如 Desktop 3.4 支持 Runtime 2.8–2.9，Runtime 2.9 固定 Codex SDK X 与 Claude Agent SDK Y。安全修复通过受控 bot PR 更新 lockfile，跑回放和真实 smoke 后逐步发布。
+升级按兼容矩阵进行：例如 Desktop 3.4 支持 Runtime 2.8–2.9，Runtime 2.9 固定 Codex SDK X 与 Claude Agent SDK Y。安全修复通过受控 bot PR 更新 lockfile，跑回放和真实 smoke 后逐步发布。
 
 ### 两家 SDK 的 Session 语义不同
 
-Codex TypeScript 的 thread ID 要等 thread 启动后才可用，持久化时应等待 `thread.started` 或首个 run 建立 ID；多次调用 `run()` 会继续使用同一 thread。Claude Agent SDK 的 TypeScript 核心是一次 `query()` 的消息流；当前 session 指南通过 result/init 中的 `session_id` 捕获 ID，再用 `resume`、`continue`、`forkSession` 等 options 工作。不同版本的能力会变化，统一层应保存 opaque ID 和 capability，不假定两者都有长驻的 client 对象。对话 session 保存的是模型/工具历史，未必包含工作区文件快照；恢复前仍要检查 Git 和文件状态，分支对话也不等于分支文件系统。
+Codex TypeScript 的 thread ID 要等 thread 启动后才可用，持久化时应等待 `thread.started` 或首个 run 建立 ID；多次调用 `run()` 会继续使用同一 thread。Claude Agent SDK 的 TypeScript 核心是一次 `query()` 的消息流；session 指南通过 result/init 中的 `session_id` 捕获 ID，再用 `resume`、`continue`、`forkSession` 等 options 工作。不同版本的能力会变化，统一层应保存 opaque ID 和 capability，不假定两者都有长驻的 client 对象。对话 session 保存的是模型/工具历史，未必包含工作区文件快照；恢复前仍要检查 Git 和文件状态，分支对话也不等于分支文件系统。
 
 `settingSources: []` 代表企业 adapter 不自动加载用户或项目里的 Claude 配置，是建立可重复执行环境的常用基线；若产品允许 `.claude/` 配置、skills 或 plugins，必须把来源作为显式 capability，扫描后展示给用户，并受租户策略限制。Codex 的本地配置、AGENTS 指令同理：配置发现不是无害便利，它会改变工具、模型和网络行为。
 

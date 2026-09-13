@@ -1,10 +1,10 @@
 # Capability 供应链：Tool、Skill 与 Agent Registry 的可信发布
 
-能力供应链负责把 Tool、Skill 和 Agent Profile 从来源代码安全地交付到运行任务。链路需要记录版本、摘要、签名、SBOM、来源与撤销状态；解析后的能力仍受 Policy、Secret Broker、网络出口和审批约束。
+能力供应链把 Tool、Skill 和 Agent Profile 从源代码交付到运行任务。它记录版本、摘要、签名、SBOM、来源和撤销状态；解析后的能力仍受 Policy、Secret Broker、网络出口与审批约束。
 
-## 1. Registry 不是“可信插件商店”
+## 1. Registry 的信任边界
 
-Registry 首先是**声明与索引系统**：它告诉控制面某个能力声称叫什么、需要什么、由谁发布。它不能单独证明：
+Registry 记录能力的**声明与索引**：名称、需求和发布者。它本身不能证明：
 
 - 二进制就是被审查的源代码构建出来的；
 - `readOnly: true` 的工具不会写数据或外传；
@@ -13,7 +13,7 @@ Registry 首先是**声明与索引系统**：它告诉控制面某个能力声�
 - 远端 MCP Server 当前暴露的内容与注册时相同；
 - 一个旧的“批准”可以安全沿用到新版本。
 
-因此必须区分四类事实：
+应区分四类事实：
 
 | 层次 | 例子 | 信任方式 |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ flowchart LR
 
 ## 3. 统一对象模型：声明、Artifact、Release、Binding
 
-不要把所有字段塞在一个可随时修改的 Registry 行中。建议拆成：
+字段应拆成几类对象：
 
 - **Descriptor**：模型/人可读的声明和 schema；
 - **Artifact**：不可变内容，地址由 digest 标识；
@@ -90,7 +90,7 @@ type TenantBinding = {
 };
 ```
 
-版本字符串适合人类沟通，`artifactDigest` 才是执行身份。同一个 `2.3.1` 不能覆盖发布；若内容改变必须生成新版本和 digest。
+版本字符串用于沟通，执行时以 `artifactDigest` 为身份。同一个 `2.3.1` 不得覆盖；内容变化必须发布新版本和 digest。
 
 ## 4. 三种 Registry 的不同语义
 
@@ -155,7 +155,7 @@ spec:
   owner: developer-productivity
 ```
 
-摄入时扫描隐藏 Unicode、外部动态下载、越权话术、混淆脚本和跨目录引用；但静态扫描无法理解所有语义，因此仍需人工审核、模型行为 Eval 和沙箱约束。Skill 的 Markdown 被篡改即产生新 digest，旧 Task 恢复时继续固定旧内容或明确迁移。
+摄入时扫描隐藏 Unicode、外部动态下载、越权话术、混淆脚本和跨目录引用。静态扫描无法覆盖全部语义，还要结合人工审核、模型行为 Eval 和沙箱约束。Skill Markdown 每次修改都会产生新 digest；旧 Task 继续使用旧内容，或通过显式迁移切换。
 
 ### 4.3 Agent Registry：配置上限，不是超级身份
 
@@ -181,7 +181,7 @@ spec:
   owner: appsec
 ```
 
-Profile 是策略允许的**最大候选范围**。某个 Task 实际得到的权限仍是父任务授权、Profile、租户绑定、资源策略、环境和委派请求的交集。Profile 中写 `maximumEffects: [external_write]` 绝不表示 Runtime 必须授予该能力。
+Profile 给出策略允许的**最大候选范围**。Task 的实际权限取父任务授权、Profile、租户绑定、资源策略、环境和委派请求的交集。Profile 中写 `maximumEffects: [external_write]` 不表示 Runtime 必须授予该能力。
 
 ## 5. 从源码到 Artifact：可复现证据链
 
@@ -199,7 +199,7 @@ source commit + dependency lock + build recipe
     -> candidate release
 ```
 
-Provenance 至少回答：谁在什么受控 builder 上，使用哪些源代码和参数，产出了哪个 digest。SBOM 列依赖，但不证明依赖没有恶意行为；CVE 扫描只覆盖已知漏洞；签名只绑定身份与内容。这些证据要组合使用。
+Provenance 至少记录：谁在什么受控 builder 上，使用哪些源代码和参数，产出了哪个 digest。SBOM 列出依赖，但不证明依赖没有恶意行为；CVE 扫描只覆盖已知漏洞；签名只绑定身份与内容。这些证据需要一起评估。
 
 ```json
 {
@@ -243,9 +243,9 @@ stateDiagram-v2
 
 状态变化写不可变审计事件；Release 对象本身不可修改。修复元数据错误也发布新 Revision。`quarantined` 与 `revoked` 应进入独立快速分发通道，不能等待常规配置周期。
 
-## 7. Capability Resolution：先锁版本，再暴露给模型
+## 7. Capability Resolution：固定版本后提供给模型
 
-解析输入包括 Task/Agent/Skill 请求、租户 Binding、Runtime/OS 能力、数据区域、当前健康和撤销状态。流程分两步：
+解析输入包括 Task/Agent/Skill 请求、租户 Binding、Runtime/OS 能力、数据区域、当前健康和撤销状态，分两步处理：
 
 1. **控制面解析**兼容版本与依赖，生成带 digest 的封闭 Release Snapshot；
 2. **执行面过滤**本次主体、资源、风险和数据分类，给模型暴露最小 Tool View。
@@ -286,7 +286,7 @@ async function resolveForTask(req: ResolveRequest): Promise<CapabilitySnapshot> 
 
 ### 7.1 依赖解析与冲突
 
-Skill 可能需要 `workspace.apply_patch@^2`，Agent Profile 允许 `@^2.1`，租户只批准 `2.2.4`。解析器选择交集中的固定 digest；交集为空就 Admission Deny，不能悄悄换成未经批准的旧版本。
+Skill 可能需要 `workspace.apply_patch@^2`，Agent Profile 允许 `@^2.1`，租户只批准 `2.2.4`。解析器从交集中选择固定 digest；交集为空时拒绝准入，不得悄悄换成未经批准的旧版本。
 
 解决结果要包含完整依赖图和原因，便于回答“为什么这个 Task 看到了此 Tool”。同名工具来自不同 Publisher 时使用命名空间和 publisher identity，不能按显示名覆盖。
 
@@ -391,7 +391,7 @@ DLP 在输入、Tool 参数、出口正文、Artifact 和日志多个点运行�
 
 ## 12. 分阶段发布、Eval 与自动回滚
 
-Capability 升级同时改变程序行为和模型选择行为。即使 API schema 兼容，描述词变化也可能导致调用率、参数和审批频率改变。因此发布门包括：
+Capability 升级会同时改变程序行为和模型选型。即使 API schema 兼容，描述词变化也可能改变调用率、参数和审批频率。发布门包括：
 
 - Artifact/SBOM/provenance/签名门；
 - schema 与 Runtime API 兼容测试；
@@ -500,7 +500,7 @@ CREATE TABLE capability_decision (
 
 ## 15. 可靠性与一致性边界
 
-Registry 发布采用构建不可变 Snapshot + 签名 + CDN/本地缓存，避免 Runtime 每次 Tool Call 同步查询控制面。更新流程可用 Outbox/Reconciler：先保存 Release/Biding 状态，再异步构建快照；只有 Snapshot 可验证且达到分发 quorum 才标记 Active。
+Registry 发布采用不可变 Snapshot、签名和 CDN/本地缓存，避免 Runtime 每次 Tool Call 同步查询控制面。更新流程可用 Outbox/Reconciler：先保存 Release/Binding 状态，再异步构建快照；只有 Snapshot 可验证且达到分发 quorum 才标记 Active。
 
 常见竞态：
 
@@ -564,7 +564,7 @@ it("signed metadata does not bypass organization risk policy", async () => {
 
 ## 18. 实战练习
 
-实现一个最小 Capability Control Plane：接收 OCI Tool、Skill tarball 和 Agent Profile；校验 digest、签名与 provenance；生成 SPDX SBOM；运行 schema/沙箱/Eval 门；创建租户 Binding；发布签名 Snapshot；Runtime 固定 Snapshot 并签发 Execution Ticket；最后演练 Publisher key 泄露的 emergency revoke。
+实现一个最小 Capability Control Plane：接收 OCI Tool、Skill tarball 和 Agent Profile；校验 digest、签名与 provenance；生成 SPDX SBOM；运行 schema/沙箱/Eval 门；创建租户 Binding；发布签名 Snapshot；Runtime 固定 Snapshot 并签发 Execution Ticket；再演练 Publisher key 泄露后的 emergency revoke。
 
 验收必须展示：
 

@@ -74,7 +74,7 @@ flowchart LR
   TESTKIT[testkit] --> CONTRACTS
 ```
 
-`runtime-core` 不能 import Electron、OpenAI、Anthropic、数据库 client；adapter 可以依赖 core 定义的 port。用 ESLint boundary rule 或依赖图 CI 强制，而不是靠口头约定。
+`runtime-core` 不能 import Electron、OpenAI、Anthropic、数据库 client；adapter 可以依赖 core 定义的 port。用 ESLint boundary rule 或依赖图 CI 强制这条边界。
 
 ## 3. 迭代里程碑与退出条件
 
@@ -230,7 +230,7 @@ export function replay(runId: string, events: EventEnvelope[]): RunState {
 }
 ```
 
-生产实现还要验证 `event.runId`、唯一 `eventId`、审批 ID、Tool 生命周期。关键点是 reducer 只解释事实；它不重发网络请求。Command planner 根据 state 决定下一意图，executor 才做 I/O。
+生产实现还要验证 `event.runId`、唯一 `eventId`、审批 ID、Tool 生命周期。Reducer 只解释事实，不重发网络请求；Command planner 根据 state 决定下一意图，executor 才做 I/O。
 
 ## 6. 可编程 Fake Provider
 
@@ -288,7 +288,7 @@ const provider = new ScriptedProvider([
 ], clock);
 ```
 
-每次 `generate` attempt 必须恰好一个 `completed`，`reason: "tool"` 表示本次模型调用结束、Runtime 接下来执行 Tool，并不表示整个 Run 完成。不要用 iterator 自然结束偷偷代表终态，也不要让 Fake 绕过 canonical adapter，否则契约测试只验证了另一条路径。
+每次 `generate` attempt 必须恰好一个 `completed`，`reason: "tool"` 表示本次模型调用结束、Runtime 接下来执行 Tool，不表示整个 Run 完成。iterator 自然结束不能代替终态，Fake 也必须经过 canonical adapter，否则契约测试会绕开真实路径。
 
 ## 7. 幂等 Tool、未知结果与 Effect Ledger
 
