@@ -1,8 +1,8 @@
-# 企业级 AI 平台总体架构
+# AI 平台总体架构
 
 ## 1. 平台要解决什么
 
-AI 平台不是“统一封装一个 `/chat` 接口”。它要让团队以受治理、可恢复、可观测、成本可归属的方式交付 Agent，并使 Windows/macOS、Web、浏览器扩展、IDE 共用稳定能力。核心产物是标准化的执行合同和 paved road，而非禁止业务创新的中央框架。
+AI 平台要让团队以受治理、可恢复、可观测、成本可归属的方式交付 Agent，并让 Windows/macOS、Web、浏览器扩展和 IDE 共用稳定能力。平台提供执行合同和 paved road，不替业务决定所有实现。
 
 平台目标：多模型可替换、工具统一接入、长任务可恢复、用户身份可委托、策略不可绕过、租户/数据隔离、端到端 SLO、离线/在线评测和可逆发布。非目标：替业务写 prompt、用 LLM 取代确定性规则、把所有数据集中到一个向量库。
 
@@ -87,7 +87,7 @@ interface RunContext {
 - **客户端持有供应商 key**：无法撤权、审计和成本归属。客户端只持平台短时 token。
 - **在线效果不可复现**：prompt/tool/model 漂移。每个 run 绑定完整 release digest。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 继续阅读[任务控制平面](task-control-plane.md)、[控制面/数据面](control-data-plane.md)、[执行环境生命周期](execution-environment-lifecycle.md)、[能力供应链](capability-supply-chain.md)、[多租户治理](multitenancy-governance.md)和[可靠性与成本](reliability-cost.md)。关联 DDD、事件溯源、零信任、工作流引擎、API gateway、OTel 与平台工程。
 
@@ -95,7 +95,7 @@ interface RunContext {
 
 验收：架构图能回答“谁授权、谁持久化、谁计费、谁恢复、谁撤权”；任一 provider/MCP server/控制面短暂故障都有确定行为；从 `runId` 可在 10 分钟内完成一次事故审计。
 
-## 官方延伸阅读
+## 官方资料
 
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
 - [OpenTelemetry GenAI Semantic Conventions](https://github.com/open-telemetry/semantic-conventions-genai)

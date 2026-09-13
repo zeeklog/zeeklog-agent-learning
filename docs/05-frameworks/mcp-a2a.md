@@ -1,6 +1,6 @@
 # MCP 与 A2A：工具协议、Agent 互操作与信任边界
 
-> 截至 2026-08：MCP 当前规范版本为 `2026-07-28`；A2A 最新发布版本为 `1.0.0`。旧教程中的 MCP `initialize`、`Mcp-Session-Id`、HTTP+SSE 常驻会话以及早期 A2A 0.x 字段不能直接照搬。
+> 截至 2026-08，MCP 规范版本为 `2026-07-28`，A2A 发布版本为 `1.0.0`。旧教程中的 MCP `initialize`、`Mcp-Session-Id`、HTTP+SSE 常驻会话和 A2A 0.x 字段需要按对应版本重新核对。
 
 ## 1. 两个协议解决不同问题
 
@@ -74,7 +74,7 @@ interface DelegationEnvelope {
 - **重试副作用**：MRTR/网络重试重复下单。写工具必须接收幂等键并返回可查询 operation id。
 - **跨 Agent 级联**：一个被注入的 Artifact 污染共享记忆。标注 provenance/trust level，跨边界重新校验，不传播隐式权限。
 
-## 6. 关联知识、练习与验收
+## 6. 练习与验收
 
 关联 OAuth 2.1/OIDC、workload identity、schema registry、SSRF、零信任、幂等、事件驱动长任务和[安全威胁模型](../06-platform/security-threat-model.md)。
 
@@ -82,7 +82,7 @@ interface DelegationEnvelope {
 
 验收：未授权调用 100% fail closed；重复写不产生第二个订单；所有调用能由 `traceId + principal + schemaHash + policyDecisionId` 审计；Server 被撤销后 60 秒内不可再发现/调用；兼容矩阵覆盖当前版和一个明确支持的旧版。
 
-## 官方延伸阅读
+## 官方资料
 
 - [MCP 2026-07-28 规范发布说明](https://blog.modelcontextprotocol.io/posts/2026-07-28/)
 - [MCP 规范](https://modelcontextprotocol.io/specification/)

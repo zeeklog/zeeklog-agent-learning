@@ -1,8 +1,8 @@
 # Build vs Buy：框架、托管平台与自研的决策方法
 
-## 1. 问题不是“哪个最强”
+## 1. 先定义选型问题
 
-企业选型通常有四条路线：直接调用模型 API、自托管开源框架、使用云厂商托管 Agent 服务、自研 Runtime。它们不是互斥关系。常见正确组合是：**购买模型与基础托管能力，采用开源编排表达，自研最小的企业策略与可移植边界**。
+企业选型通常有四条路线：直接调用模型 API、自托管开源框架、使用云厂商托管 Agent 服务、自研 Runtime。它们可以组合使用。常见做法是：**购买模型与基础托管能力，采用开源编排表达，自研必要的企业策略与可移植边界**。
 
 ```text
 低差异化：模型推理、向量库、基础队列             倾向 Buy
@@ -102,7 +102,7 @@ interface DecisionEvidence {
 - **过度抽象**：为所有框架求最低公分母，反而失去强项。只统一稳定语义，专有能力经 capability flag 暴露。
 - **影子平台**：各业务自行接模型/工具，最后无法统一撤权、审计和成本归属。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联：[框架全景](landscape.md)、[多租户治理](../06-platform/multitenancy-governance.md)、[可靠性与成本](../06-platform/reliability-cost.md)。
 
@@ -110,7 +110,7 @@ interface DecisionEvidence {
 
 验收：评审者能从仓库复现评分；至少包含 10 个故障注入用例；备用方案能在一天内运行同一回归集；任何“必须自研”项都能映射到明确的企业差异化或合规控制。
 
-## 官方延伸阅读
+## 官方资料
 
 - [Microsoft Agent Framework 概览](https://learn.microsoft.com/en-us/agent-framework/overview/)
 - [Google ADK：Agents 与 Workflows](https://adk-labs.github.io/adk-docs/agents/)

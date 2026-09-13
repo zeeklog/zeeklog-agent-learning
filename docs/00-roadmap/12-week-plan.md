@@ -1,10 +1,10 @@
-# 12 周学习计划：以可交付成果驱动
+# 12 周学习计划：每周一个可检查的结果
 
 ## 计划原则
 
-每周建议投入 12～16 小时，比例保持在：原理 25%、编码 45%、失败实验 20%、ADR/复盘 10%。如果时间只有一半，减少阅读面，不删除代码、测试和失败注入。
+每周投入 12～16 小时，可按原理 25%、编码 45%、失败实验 20%、ADR/复盘 10% 分配。如果时间只有一半，减少阅读面，保留代码、测试和失败注入。
 
-贯穿式项目统一使用 TypeScript：一个 `runtime-core` 包、一个 Electron 壳、两个 Provider Adapter、一个本地 SQLite Event Store、三种 Tool 和一套 Trace/Eval。详细规格见 [参考项目](../../docs/07-practice/reference-project.md)。
+练习项目使用 TypeScript：一个 `runtime-core` 包、一个 Electron 壳、两个 Provider Adapter、一个本地 SQLite Event Store、三种 Tool 和一套 Trace/Eval。详细规格见 [参考项目](../../docs/07-practice/reference-project.md)。
 
 ## Phase 1：建立正确的执行模型（第 1～3 周）
 

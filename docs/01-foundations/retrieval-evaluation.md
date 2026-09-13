@@ -1,8 +1,8 @@
 # 检索、上下文与评测基础
 
-## 1. RAG 不是“向量库 + Prompt”
+## 1. RAG 的组成
 
-企业检索增强系统至少有八个可独立失败的环节：采集、解析、切块、索引、权限过滤、召回、重排、上下文组装。最终回答错误时，必须区分：知识源没有答案、索引过期、权限过滤错误、候选未召回、重排错误、Context 丢失、模型未采用证据、输出无法验证。
+检索增强系统至少有八个可独立失败的环节：采集、解析、切块、索引、权限过滤、召回、重排和上下文组装。回答错误时，要区分是知识源没有答案、索引过期、权限过滤错误、候选未召回、重排错误、Context 丢失、模型没有采用证据，还是输出无法验证。
 
 ```mermaid
 flowchart LR
@@ -194,4 +194,4 @@ Judge 适合评价开放文本的完整性、相关性和风格，但不应独�
 - [BEIR：异构信息检索基准](https://arxiv.org/abs/2104.08663)
 - [OWASP：LLM Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
 
-下一模块：[企业级 AI 桌面客户端 →](../../docs/02-desktop/overview.md)
+下一模块：[AI 桌面客户端 →](../../docs/02-desktop/overview.md)

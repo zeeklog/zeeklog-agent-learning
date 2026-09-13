@@ -142,13 +142,13 @@ type Approval = {
 - **批准与工具参数未绑定**：竞态替换参数。审批签名覆盖 canonical arguments。
 - **日志“排障方便”记录完整输入**：诊断包成为数据外泄通道。字段级分类、默认脱敏、用户预览后导出。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联：[类型化 IPC](process-ipc.md)、[Provider 适配](provider-adapters.md)、[统一 SDK 插件安全](../04-sdk/transport-extensions.md)。
 
 练习：给桌面客户端写威胁模型并实现 workspace grant。验收：XSS 测试无法得到 Node/Tauri 原始 API；`../`、symlink、junction 越界被拒；伪造审批摘要失败；进程列表、日志、crash dump 不出现 API key；远程页面请求摄像头与任意 navigation 被拒；安全 fuses/capabilities 在 CI 自动校验。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Electron Security Checklist](https://www.electronjs.org/docs/latest/tutorial/security)
 - [Electron Context Isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)

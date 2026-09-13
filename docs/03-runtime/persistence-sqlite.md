@@ -1,6 +1,6 @@
 # SQLite 持久化内核：Event Store、Outbox 与未知副作用
 
-本章把“事件为真相”落实为 SQLite schema 和事务代码，并串起 CAS append、WAL、收发箱、`receipt_unknown`、迁移与灾难恢复。SQLite 行为已于 **2026-08-30** 按官方文档核对；表结构和阈值是参考实现，仍需用实际负载验证。
+本章用 SQLite schema 和事务代码实现“事件为真相”，覆盖 CAS append、WAL、收发箱、`receipt_unknown`、迁移和灾难恢复。SQLite 行为于 **2026-08-30** 按官方文档核对；表结构和阈值只是参考值，仍需用实际负载验证。
 
 ## 1. 持久化边界：先写事实，再推进世界
 
@@ -381,7 +381,7 @@ SQLite 公共核心不提供透明静态加密；SQLite 官方的 SEE 是单独�
 
 概念入口见[Runtime 总览](overview.md)与[Agent Loop](agent-loop.md)；副作用协议见[工具系统](tool-system.md)，恢复策略见[流式与恢复](streaming-recovery.md)，指标见[可观测与评测](observability-evals.md)。桌面工作区的 patch receipt 见[Coding Agent Host](../02-desktop/coding-agent-host.md)。
 
-## 官方来源（核对时间：2026-08-30）
+## 官方资料（核对时间：2026-08-30）
 
 - [SQLite Write-Ahead Logging](https://www.sqlite.org/wal.html)、[Transactions](https://www.sqlite.org/lang_transaction.html)、[Busy timeout](https://www.sqlite.org/c3ref/busy_timeout.html)
 - [SQLite PRAGMA](https://www.sqlite.org/pragma.html)、[WAL file format and recovery](https://www.sqlite.org/walformat.html)

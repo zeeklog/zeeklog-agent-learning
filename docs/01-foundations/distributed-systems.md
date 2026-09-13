@@ -1,8 +1,8 @@
-# 分布式系统语义：Agent Runtime 的隐藏主干
+# 分布式系统语义：Agent Runtime 的基础
 
 ## 1. 为什么“本地桌面应用”也是分布式系统
 
-AI Desktop 至少包含 Renderer、Main、Runtime Sidecar、远程 Provider、Tool/MCP Server 和平台控制面。这些组件会独立失败，并面对网络延迟、消息重复与版本错配；即使都在同一台电脑，跨进程 IPC 也不能提供业务意义上的 exactly-once。
+AI Desktop 至少包含 Renderer、Main、Runtime Sidecar、远程 Provider、Tool/MCP Server 和平台控制面。组件会独立失败，也会遇到网络延迟、消息重复和版本错配。即使它们在同一台电脑上，跨进程 IPC 也不能提供业务意义上的 exactly-once。
 
 Runtime 必须回答：
 

@@ -1,6 +1,6 @@
-# 交付、灰度、平台产品化与组织演进
+# 交付、灰度与平台演进
 
-## 1. 演进路线：先证明价值，再扩自治
+## 1. 分阶段推进
 
 | 阶段 | 目标 | 关键交付物 | 进入下一阶段门槛 |
 |---|---|---|---|
@@ -10,7 +10,7 @@
 | 3 规模化（4~9 月） | 多 cell/多模型/长任务 | durable runtime、policy、成本路由、灰度、灾备 | SLO/成本/安全预算持续达标 |
 | 4 联邦生态 | 域自治、中央治理 | MCP/A2A 目录、域平台、统一证据与协议 | owner/下线/兼容流程成熟，无影子接入 |
 
-不要第一天建设“万能 Agent 平台”。优先挑高频、可测、低不可逆风险的工作流；由 read-only → 可撤销写 → 高风险写逐级提升自治。
+不要第一天建设“万能 Agent 平台”。先选高频、可测且不可逆风险较低的工作流，再按 read-only → 可撤销写 → 高风险写逐级提升自治。
 
 ## 2. Platform as a Product
 
@@ -77,7 +77,7 @@ Shadow 模式调用新 release 但禁止副作用，只比较输出/计划；写
 - **指标被优化游戏化**：judge 分数上涨但人工覆盖/投诉增加。组合业务结果、执行证据与人工采样。
 - **没有下线机制**：旧 tool/Agent 长期带凭据。TTL、owner heartbeat、usage-based retirement。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 关联 platform engineering、Team Topologies、GitOps、progressive delivery、feature flags、SLSA、MLOps/LLMOps、ADRs 与组织变革。先读[Build vs Buy](../05-frameworks/build-vs-buy.md)和[控制面/数据面](control-data-plane.md)。
 
@@ -85,7 +85,7 @@ Shadow 模式调用新 release 但禁止副作用，只比较输出/计划；写
 
 验收：新团队一周内按 paved road 上线 read-only Agent；每个 release 可复现、可审计、15 分钟内回滚；canary 能自动发现预置质量/成本回归；季度内完成一次 provider 或 framework 替换演练；平台指标能证明业务价值而非组件数量。
 
-## 官方延伸阅读
+## 官方资料
 
 - [NIST AI RMF Playbook](https://www.nist.gov/itl/ai-risk-management-framework/nist-ai-rmf-playbook)
 - [OpenFeature Specification](https://openfeature.dev/specification/)

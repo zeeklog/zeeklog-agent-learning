@@ -200,13 +200,13 @@ Snapshot 至少包含 `sessionId、atSeq、schemaVersion、turns/materializedSta
 - **错误 message 原样透传**：暴露请求头、路径或 prompt。稳定 code + 安全 message + 受限诊断。
 - **新增枚举让旧客户端崩溃**：对 unknown 没有默认分支。保留原始类型并以安全降级展示。
 
-## 10. 关联知识、练习与验收
+## 10. 练习与验收
 
 关联：[Transport 与插件](transport-extensions.md)、[兼容与测试](compatibility-testing.md)、[桌面类型化 IPC](../02-desktop/process-ipc.md)。
 
 练习：给“读取文件 → 请求写入审批 → 应用补丁”生成完整事件 trace，并写 reducer。验收：随机重复、乱序、丢一条事件时 reducer 能去重/报 gap/拒绝非法转换；并发 terminal 只有一个提交成功；断线后可从 seq 恢复；敏感输出只存 blob ref；旧 decoder 面对新增事件不会获得额外权限。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [JSON Schema Specification](https://json-schema.org/specification)
 - [OpenTelemetry Trace semantic concepts](https://opentelemetry.io/docs/concepts/signals/traces/)

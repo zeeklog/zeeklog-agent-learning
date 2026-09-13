@@ -1,6 +1,6 @@
 # 主流 Agent Framework 全景与选型基线
 
-> 基线日期：2026-08-30。Agent 框架变化很快，版本、稳定级别和迁移建议必须在每次架构评审时重新核对。框架不是 Runtime；它通常只解决模型循环、编排表达或集成体验中的一部分。
+> 基线日期：2026-08-30。框架版本、稳定级别和迁移建议在架构评审时重新核对。框架通常只解决模型循环、编排表达或集成体验的一部分，不能代替 Runtime。
 
 ## 1. 先建立分层语言
 
@@ -86,7 +86,7 @@ interface AgentPort {
 
 验收标准：30 条回归集成功率差异可解释，恢复测试 100% 不产生重复副作用，框架替换不修改领域层接口。
 
-## 官方延伸阅读
+## 官方资料
 
 - [LangGraph overview](https://langchain-ai.github.io/langgraph/index.html)
 - [OpenAI API quickstart：Agents SDK 示例](https://developers.openai.com/api/docs/quickstart)

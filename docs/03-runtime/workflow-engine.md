@@ -1,6 +1,6 @@
 # Durable Workflow：让长任务跨越崩溃、重启与人工等待
 
-Durable Workflow 用事件历史和确定性重放跨越进程崩溃与人工等待。本章说明 Activity、重试、超时、信号、版本和补偿，并给出采用成熟引擎或自建轻量编排的判断边界。
+Durable Workflow 用事件历史和确定性重放处理进程崩溃与人工等待。本章说明 Activity、重试、超时、信号、版本和补偿，并比较成熟引擎与轻量自建编排的适用边界。
 
 ## 1. Promise 链为什么不等于 Workflow
 

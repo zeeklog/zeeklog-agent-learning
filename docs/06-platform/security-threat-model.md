@@ -93,7 +93,7 @@ async function secureToolCall(ctx: TrustedRun, intent: ToolIntent) {
 - **沙箱有容器就安全**：宿主挂载、网络、metadata、内核漏洞仍可突破。按威胁等级选隔离。
 - **安全日志保存全部内容**：反而形成高价值泄露库。最小化、脱敏和分权访问。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联 STRIDE、attack tree、零信任、OAuth/OIDC、SSRF、sandbox escape、SLSA/SBOM、DLP、MITRE ATLAS、NIST AI RMF。配合[MCP/A2A](../05-frameworks/mcp-a2a.md)学习。
 
@@ -101,7 +101,7 @@ async function secureToolCall(ctx: TrustedRun, intent: ToolIntent) {
 
 验收：测试中私密数据不可到达未授权 egress；写工具均经外部 PDP；撤权/kill switch 60 秒生效；沙箱无法访问宿主凭据/metadata；任一告警可追溯到 release、principal、policy 和具体副作用。
 
-## 官方延伸阅读
+## 官方资料
 
 - [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
 - [OWASP LLM/GenAI Security Project](https://genai.owasp.org/)

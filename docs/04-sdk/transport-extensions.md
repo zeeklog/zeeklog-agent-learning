@@ -171,13 +171,13 @@ WebSocket/SSE 的代理可能有空闲超时；heartbeat 间隔由服务端协�
 - **插件 hook 无限等待**：所有 turn 堵死。deadline、隔离 executor、熔断。
 - **热升级两版本同时注册工具**：调用随机落到旧实现。generation ID + 原子 registry swap。
 
-## 10. 关联知识、练习与验收
+## 10. 练习与验收
 
 关联：[合约与事件](contracts-events.md)、[兼容测试](compatibility-testing.md)、[桌面 IPC](../02-desktop/process-ipc.md)、[桌面安全](../02-desktop/security.md)。
 
 练习：实现 in-memory、WebSocket fake、Browser MV3 三种 transport，以及只读 Git 插件。验收：所有 transport 通过同一 conformance suite；随机断线后无漏/重放副作用；慢消费者内存有界；伪造 extension ID/native client 被拒；插件尝试访问 scope 外路径与域名失败；插件崩溃不结束 Runtime；major/新增权限更新需要重新审批。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Chrome Manifest V3](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3)
 - [Chrome Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging)

@@ -1,6 +1,6 @@
 # Provider 抽象：端口适配器、能力协商与韧性
 
-> 抽象的目标不是隐藏差异，而是把差异放在一个可测试的位置。公共 Runtime 定义稳定语义；Adapter 把每家 SDK 的会话、流、工具、错误、取消和 usage 翻译进来。
+> 公共 Runtime 定义稳定语义，Adapter 在可测试的边界内处理各家 SDK 的会话、流、工具、错误、取消和 usage。
 
 ## 1. 反腐层的边界
 
@@ -177,13 +177,13 @@ Tool 名称、schema dialect、并行调用能力通过 adapter 编译。若 Pro
 - **映射未知事件为 text**：隐藏协议变化。unknown 诊断 + 安全失败 + adapter 升级门禁。
 - **重试 tool use**：重复提交或重复写文件。tool-call 幂等键、结果账本、明确人工恢复。
 
-## 9. 关联知识、练习与验收
+## 9. 练习与验收
 
 关联：[桌面 Provider 适配](../02-desktop/provider-adapters.md)、[合约事件](contracts-events.md)、[兼容测试](compatibility-testing.md)。
 
 练习：实现 `FakeProviderPort`、Codex/Claude 的最小 smoke adapter 和基于能力的 router。验收：Provider 包之外无法 import 官方 SDK；相同 fixture 产出相同公共事件不变量；缺关键 sandbox 能力时拒绝而非 prompt 降级；认证失败不 fallback；限流按 deadline 退避；升级 SDK 后 unknown union 分支令 CI 失败。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [OpenAI Codex TypeScript source](https://github.com/openai/codex/tree/main/sdk/typescript)

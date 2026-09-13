@@ -1,6 +1,6 @@
 # Zeeklog Agent Learning
 
-面向工程师的 Agent 学习资料：从 LLM 与分布式系统基础开始，经过 Agent Loop、工具、检索、记忆、协议和多 Agent，最后落到桌面端、可恢复 Runtime、统一 SDK 与平台治理。
+这份知识库从 LLM 和分布式系统基础开始，逐步进入 Agent Loop、工具、检索、记忆、协议、多 Agent、桌面端和平台治理。每章都尽量落到状态、权限、失败处理或可验证的运行结果。
 
 本仓库是从极客日志文档中抽取的独立知识库，只保留 AI 学习内容。它把 [datawhalechina/hello-agents](https://github.com/datawhalechina/hello-agents) 与 [datawhalechina/Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) 接入同一条学习路线，提供章节映射、练习建议和工程验收标准。
 
@@ -20,13 +20,13 @@
 
 ## 先从这里开始
 
-如果刚接触 Agent，按下面顺序阅读：
+刚接触 Agent 时，按下面顺序阅读：
 
 1. [架构能力地图](docs/00-roadmap/capability-map.md)，确认自己的基础和缺口。
 2. [LLM 系统原理](docs/01-foundations/llm-systems.md)与[模型接口、流式与结构化输出](docs/01-foundations/model-io.md)。
 3. [Runtime 总体架构](docs/03-runtime/overview.md)，建立 Run、Task、Event、Tool 的边界。
 4. [执行契约、规划与验证](docs/03-runtime/execution-contract-verification.md)，再实现一个最小 Agent Loop。
-5. [贯穿式参考项目](docs/07-practice/reference-project.md)，把每个练习留下代码、测试或故障证据。
+5. [参考项目](docs/07-practice/reference-project.md)，把练习落实为代码、测试或故障证据。
 
 已经会调用模型 API 的读者，可以直接从下方的 [Agent-Learning-Hub Stage 2](#agent-learning-hub) 或 [Hello-Agents 第二部分](#hello-agents)开始，然后回到 Runtime 和平台章节补生产语义。
 
@@ -40,13 +40,13 @@
 | 03 · Runtime | Agent Loop、Workflow、事件、工具、上下文、恢复 | [Runtime 总览](docs/03-runtime/overview.md) |
 | 04 · SDK | Provider、事件协议、Transport、兼容性测试 | [统一 SDK](docs/04-sdk/overview.md) |
 | 05 · Framework | 框架选型、Adapter、MCP、A2A | [Framework 与协议](docs/05-frameworks/landscape.md) |
-| 06 · 平台 | 控制面、模型网关、环境、供应链、多租户、成本 | [平台架构](docs/06-platform/overview.md) |
+| 06 · 平台 | 控制面、模型网关、Gateway 方案、环境、供应链、多租户、成本 | [平台架构](docs/06-platform/overview.md) |
 | 07 · 实战 | 参考架构、可运行内核、Kata、生产清单、ADR | [参考项目](docs/07-practice/reference-project.md) |
 | 08 · 附录 | 术语、速查表、覆盖矩阵和一手资料 | [资料索引](docs/08-appendix/reading-list.md) |
 
 ## Hello-Agents
 
-[datawhalechina/hello-agents](https://github.com/datawhalechina/hello-agents) 是一套从零开始构建智能体的中文教程，按“基础 → 经典范式 → 框架与自研 → 高级主题 → 综合案例”展开。下面的表把它的 16 章接到本地章节；左侧链接始终指向上游原文。
+[datawhalechina/hello-agents](https://github.com/datawhalechina/hello-agents) 是一套从零开始构建智能体的中文教程，按“基础 → 经典范式 → 框架与自研 → 高级主题 → 综合案例”组织。下表将它的 16 章映射到本仓库章节；上游正文和示例以原仓库为准。
 
 | Hello-Agents 内容 | 在本仓库的对应阅读 | 学习产物 |
 | --- | --- | --- |
@@ -61,15 +61,15 @@
 | 第十一章：Agentic-RL | [模型接口](docs/01-foundations/model-io.md)、[评测与观测](docs/03-runtime/observability-evals.md) | 把训练指标与 Agent 运行指标分开；训练主题作为外部补充阅读 |
 | 第十二章：性能评估 | [可观测性与 Evals](docs/03-runtime/observability-evals.md)、[兼容性测试](docs/04-sdk/compatibility-testing.md) | 固定数据集、Trace、失败分类和回归门槛 |
 | 第十三章至第十五章：旅行助手、深度研究、赛博小镇 | [端到端参考架构](docs/07-practice/reference-architecture.md)、[多 Agent 编排](docs/03-runtime/multi-agent-orchestration.md) | 先写任务边界和证据链，再决定是否拆分 Agent |
-| 第十六章：毕业设计 | [贯穿式参考项目](docs/07-practice/reference-project.md)、[生产检查清单](docs/07-practice/production-checklists.md) | 一个可运行、可观测、可回滚的完整项目 |
+| 第十六章：毕业设计 | [参考项目](docs/07-practice/reference-project.md)、[生产检查清单](docs/07-practice/production-checklists.md) | 一个可运行、可观测、可回滚的完整项目 |
 
-建议读法：先读上游章节获得直观例子，再回到本地对应章节补状态、权限、失败处理和验收。上游教程中的示例代码按其仓库版本运行，不把示例接口当成长期稳定的公共契约。
+读法：先看上游章节中的例子，再回到本地章节补状态、权限、失败处理和验收。示例代码按上游仓库的锁定版本运行，不把示例接口当成长期公共契约。
 
 <a id="agent-learning-hub"></a>
 
 ## Agent-Learning-Hub：Stage 0–8
 
-[datawhalechina/Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) 是一份持续更新的学习清单，重点放在可运行项目、Agent Harness、Skills、协议、浏览器 Agent、评测安全和发布。下面保留它的学习顺序，并给出本地落点。
+[datawhalechina/Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) 是一份学习清单，内容包括可运行项目、Agent Harness、Skills、协议、浏览器 Agent、评测、安全和发布。下表沿用它的顺序，并标出本地对应章节。
 
 | Hub 阶段 | 要掌握的内容 | 本地落点 |
 | --- | --- | --- |
@@ -85,7 +85,7 @@
 
 ### Project Ladder 对照
 
-Hub 的 Project Ladder 适合把“读懂”变成一组小项目。每一级都应留下运行说明、示例输入输出和失败记录。
+Project Ladder 把阅读拆成一组小项目。每一级都留下运行说明、示例输入输出和失败记录。
 
 | Level | 项目 | 本地练习建议 |
 | --- | --- | --- |
@@ -101,16 +101,16 @@ Hub 的 Project Ladder 适合把“读懂”变成一组小项目。每一级都
 | 10 | Personal Agent | 长期记忆、消息入口、Skills 和本地优先边界 |
 | 11 | Production Harness | Eval、Trace、Runner、CI、回放、回滚 |
 
-## 贯穿式学习方法
+## 学习方法
 
-每个主题至少留下一个能检查的结果：架构图、可运行代码、Contract Test、故障注入、Trace、Eval、ADR 或运行手册。推荐始终沿着同一条链路练习：
+每个主题至少产出一种可检查的结果：架构图、可运行代码、Contract Test、故障注入、Trace、Eval、ADR 或运行手册。练习可以沿着这条链展开：
 
 ```text
 请求接入 → TaskSpec/Plan → 权限与隔离 → Provider 流式输出
 → Tool 审批与执行 → Event Store → 验证与证据交付 → 恢复与对账
 ```
 
-不要先堆更多 Agent。先确认单 Agent、普通 Workflow 或脚本是否已经足够；确实需要拆分时，再为每个子 Agent 定义输入输出、授权范围、预算和停止条件。
+先判断单 Agent、普通 Workflow 或脚本是否已经足够。需要拆分时，再为每个子 Agent 定义输入输出、授权范围、预算和停止条件。
 
 ## 仓库结构
 

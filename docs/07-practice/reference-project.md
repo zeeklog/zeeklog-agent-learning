@@ -1,6 +1,6 @@
 # 参考项目：构建一个可恢复的 Runtime Kernel
 
-> 目标：用一个 2～4 周可完成的 TypeScript monorepo，把“统一 SDK → 状态机 → Provider → 幂等 Tool → 事件/恢复 → Trace”纵向打通。项目优先证明语义，不追求 UI 数量或框架炫技。
+> 用一个 2～4 周可完成的 TypeScript monorepo，完成“SDK → 状态机 → Provider → 幂等 Tool → 事件/恢复 → Trace”这条链。项目先验证语义，不追求 UI 数量或框架数量。
 
 ## 1. 可运行起点与最终演示
 
@@ -18,7 +18,7 @@
 
 - 不在第一版实现“任意 DAG 编辑器”、长期向量记忆、多 Agent 社交网络；
 - 不把真实 Provider 的全部特性塞进统一最低公分母；
-- 不以 Kafka、Kubernetes 或某个 Workflow 引擎作为“企业级”的证明；
+- 不以 Kafka、Kubernetes 或某个 Workflow 引擎作为系统质量的证明；
 - 不在示例中把 API Key 写入 renderer、日志或配置文件。
 
 ## 2. Monorepo 目录

@@ -1,6 +1,6 @@
-# Observability 与 Evals：从“能看日志”到“证明系统变好”
+# Observability 与 Evals：信号、指标与质量验证
 
-Event、Log、Metric、Trace 与 Eval 回答不同问题。本章为 Agent Run 定义 Span 和指标，并用可复现数据集把 Prompt、模型、工具及 Runtime 变更纳入发布门禁。
+Event、Log、Metric、Trace 与 Eval 各自回答不同问题。本章定义 Agent Run 的 Span 和指标，再用可复现数据集评估 Prompt、模型、工具及 Runtime 变更。
 
 ## 1. 五类信号回答不同问题
 

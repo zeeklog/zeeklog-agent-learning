@@ -89,7 +89,7 @@ Global Control Plane ── signed bundles ─┬─ APAC Cell A
 - **跨 cell 状态漂移**：重连路由到另一 cell 找不到 checkpoint。home-cell token 或全局目录只存定位元数据。
 - **Canary 只看 5xx**：质量、越权、token 成本恶化未触发回滚。把 eval、安全和成本指标纳入 rollout analysis。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 关联 Kubernetes controller/operator、GitOps、CRDT/最终一致、cell architecture、PKI、策略即代码、CQRS。结合[交付与演进](delivery-evolution.md)和[可靠性与成本](reliability-cost.md)学习。
 
@@ -97,7 +97,7 @@ Global Control Plane ── signed bundles ─┬─ APAC Cell A
 
 验收：控制面停机 30 分钟，既有 release 仍满足 SLO；新发布被安全暂停；被撤销工具 60 秒内全 cell 禁用；旧 generation 永不覆盖新版本；所有状态跃迁可重放审计。
 
-## 官方延伸阅读
+## 官方资料
 
 - [Kubernetes Controllers](https://kubernetes.io/docs/concepts/architecture/controller/)
 - [Kubernetes API conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md)

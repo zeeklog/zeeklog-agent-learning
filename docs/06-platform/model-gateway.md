@@ -1,12 +1,12 @@
-# 企业模型网关：身份、路由、流式与成本的统一执行面
+# 模型网关：身份、路由、流式与成本
 
-可治理的 Model Gateway 需要硬约束优先的路由、供应商语义保真、配额预留、流式归一和成本账本，兼容 `/chat` 只是协议入口。厂商事实已于 **2026-08-30** 按官方资料核对；模型名称、价格、区域和限额变化频繁，生产系统必须从版本化 Catalog 读取，不能复制本文常量。
+Model Gateway 需要处理路由约束、供应商语义、配额、流式事件和成本账本。兼容 `/chat` 只是协议入口。厂商事实于 **2026-08-30** 按官方资料核对；模型名称、价格、区域和限额会变化，生产系统应从版本化 Catalog 读取。
 
-## 1. 直连 SDK 与企业网关不是二选一信仰
+## 1. 直连 SDK 与网关的取舍
 
-直连官方 SDK 的优点是最快获得新能力、类型最准确、调试链路短；适合原型、单团队低风险应用、完全本地推理，或必须使用供应商刚发布且网关尚未支持的功能。缺点是每个客户端持密钥/身份逻辑、重试与日志各自实现，数据区域和成本难以统一证明。
+直连官方 SDK 能较快使用新能力，类型和调试链路也更直接，适合原型、低风险单团队应用、完全本地推理，或网关尚未支持的新功能。代价是各客户端分别处理密钥、身份、重试和日志，数据区域与成本也更难集中管理。
 
-企业网关提供：工作负载身份、供应商密钥托管、租户配额、模型 allowlist、数据驻留、统一审计、降级、成本归属和协议适配。代价是增加一次网络跳、一个故障域和能力发布延迟。正确策略是“**稳定公共核心 + capability negotiation + 受控 vendor extensions**”，而不是把所有模型压成一个文本字符串。
+网关可以集中处理工作负载身份、供应商密钥、租户配额、模型 allowlist、数据驻留、审计、降级、成本归属和协议适配。代价是增加网络跳数、故障域和能力发布延迟。公共协议保持稳定，Provider 特性通过 capability negotiation 和受控 vendor extensions 暴露，不把所有模型压成一个文本字符串。
 
 | 场景 | 推荐路径 | 理由 |
 |---|---|---|
@@ -265,7 +265,7 @@ tool arguments delta 只有在完整 block/finish 后才解析和 schema 校验�
 
 平台边界见[企业 AI 平台总览](overview.md)、[控制面与数据面](control-data-plane.md)；租户与驻留见[多租户治理](multitenancy-governance.md)，SLO/预算见[可靠性与成本](reliability-cost.md)，威胁模型见[安全威胁模型](security-threat-model.md)。上层统一合同见[Provider 抽象](../04-sdk/provider-abstraction.md)与[事件合同](../04-sdk/contracts-events.md)。
 
-## 官方来源（核对时间：2026-08-30）
+## 官方资料（核对时间：2026-08-30）
 
 - [OpenAI Responses API TypeScript reference](https://developers.openai.com/api/reference/typescript/resources/responses/methods/create)、[OpenAI model / prompt-caching guidance](https://developers.openai.com/api/docs/guides/latest-model)
 - [Anthropic Messages API](https://platform.claude.com/docs/en/api/messages/create)、[Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming)、[Rate limits](https://platform.claude.com/docs/en/api/rate-limits)

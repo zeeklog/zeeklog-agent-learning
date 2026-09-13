@@ -82,7 +82,7 @@ async function authorize(ctx: TrustedContext, req: ToolIntent) {
 - **只限请求数**：超长上下文和多 Agent 绕过配额。按 token、工具、时间、美元复合计量。
 - **删除只删聊天 UI**：checkpoint、Artifact、trace、备份仍保留。维护数据 lineage 和 deletion workflow。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 关联零信任、OAuth token exchange、SPIFFE workload identity、RBAC/ABAC/ReBAC、KMS envelope encryption、RLS、数据驻留、隐私工程与 FinOps。
 
@@ -90,7 +90,7 @@ async function authorize(ctx: TrustedContext, req: ToolIntent) {
 
 验收：跨租户 fuzz/property test 零泄露；凭据撤销 60 秒生效；成本可归属至 tenant/agent/release；删除请求覆盖所有派生数据并输出证明；noisy-neighbor 压测下其他租户 P95 增幅低于约定阈值。
 
-## 官方延伸阅读
+## 官方资料
 
 - [NIST Zero Trust Architecture SP 800-207](https://csrc.nist.gov/publications/detail/sp/800-207/final)
 - [Kubernetes Multi-tenancy](https://kubernetes.io/docs/concepts/security/multi-tenancy/)

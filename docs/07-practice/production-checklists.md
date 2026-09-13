@@ -1,6 +1,6 @@
 # 生产检查清单：Agent Runtime 全生命周期门禁
 
-> 用法：不要把本文当“上线前最后一天打勾”的表格。每项要绑定 **Owner、Evidence、Due date、Exception expiry**；没有证据等于没有完成。`P0` 项不允许以“后续优化”豁免。
+> 每项绑定 **Owner、Evidence、Due date、Exception expiry**。没有证据就不算完成；`P0` 项不能以“后续优化”豁免。
 
 ## 1. 清单数据结构
 

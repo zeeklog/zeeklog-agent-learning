@@ -611,7 +611,7 @@ type AdapterCapabilities = {
 
 先阅读[框架集成方法](framework-integration.md)和[Build vs Buy](build-vs-buy.md)理解防腐层；状态事实与 receipt-unknown 见[SQLite 持久化](../03-runtime/persistence-sqlite.md)，工具授权见[工具系统](../03-runtime/tool-system.md)，统一事件见[合同与事件](../04-sdk/contracts-events.md)，桌面 patch/worktree 事务见[Coding Agent Host](../02-desktop/coding-agent-host.md)。
 
-## 官方来源（核对时间：2026-08-30）
+## 官方资料（核对时间：2026-08-30）
 
 - OpenAI：[Agents SDK for TypeScript](https://openai.github.io/openai-agents-js/)、[Running agents](https://openai.github.io/openai-agents-js/guides/running-agents/)、[Streaming](https://openai.github.io/openai-agents-js/guides/streaming/)、[Human-in-the-loop / RunState versioning](https://openai.github.io/openai-agents-js/guides/human-in-the-loop/)、[Results](https://openai.github.io/openai-agents-js/guides/results/)、[Testing / ScriptedModel](https://openai.github.io/openai-agents-js/guides/testing/)
 - LangChain：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Persistence](https://docs.langchain.com/oss/python/langgraph/persistence)、[Event streaming v3](https://docs.langchain.com/oss/python/langgraph/event-streaming)

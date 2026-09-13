@@ -1,8 +1,8 @@
-# 框架集成：用 Anti-Corruption Layer 驯服快速演进的 SDK
+# 框架集成：把 SDK 差异留在 Adapter
 
-## 1. 核心原则
+## 1. 集成原则
 
-集成框架的目标不是把其全部类型“统一封装”，而是保护企业稳定语义。领域层只认识任务、事件、工具意图、审批与 Artifact；adapter 负责框架特有的 message、stream、checkpoint 与异常。专有能力通过显式 capability 暴露，不能悄悄降级。
+框架集成要保护领域层的稳定语义。领域层只认识任务、事件、工具意图、审批与 Artifact；adapter 处理框架特有的 message、stream、checkpoint 与异常。专有能力通过显式 capability 暴露，缺失时明确拒绝。
 
 ```text
 Domain Agent / Workflow
@@ -92,7 +92,7 @@ async function* guardedRun(adapter: FrameworkAdapter, cmd: StartRun, signal: Abo
 - **无法取消**：只停 UI stream，后台仍执行昂贵或破坏性操作。AbortSignal 必须贯穿。
 - **原始 trace 泛滥**：prompt/tool result 进入日志造成 PII 与 secret 泄露。默认元数据化、按字段白名单。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 关联 hexagonal architecture、Anti-Corruption Layer、event sourcing、transactional outbox、OpenTelemetry、consumer-driven contract testing，以及[控制面/数据面](../06-platform/control-data-plane.md)。
 
@@ -100,7 +100,7 @@ async function* guardedRun(adapter: FrameworkAdapter, cmd: StartRun, signal: Abo
 
 验收：领域层零 vendor import；替换 adapter 不改 workflow 业务代码；共享 contract tests 全绿；故障恢复无重复写；capability 缺失在发布期而非运行中暴露；升级可在 15 分钟内回滚。
 
-## 官方延伸阅读
+## 官方资料
 
 - [OpenAI Agents SDK：官方 API quickstart](https://developers.openai.com/api/docs/quickstart)
 - [LangGraph persistence](https://langchain-ai.github.io/langgraph/concepts/persistence/)

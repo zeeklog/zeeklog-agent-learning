@@ -1,10 +1,10 @@
-# 企业级 AI 桌面客户端：边界、选型与总体架构
+# AI 桌面客户端：边界、选型与总体架构
 
-企业级 AI 客户端需要明确可信边界、桌面容器和进程分工。本地高权限能力留在受控 Host，Web、Extension 与 IDE 可复用的协议沉入统一 SDK。
+AI 桌面客户端要明确可信边界、桌面容器和进程分工。本地高权限能力留在受控 Host，Web、Extension 与 IDE 共用的协议放进 SDK。
 
 ## 1. 先定义桌面端的职责
 
-桌面客户端是**受控的本地能力宿主**，而不是把 Web 页面套进壳。它负责用户身份接入、本地工作区授权、操作系统集成、Agent 进程托管、升级和崩溃恢复；模型协议、会话语义、事件定义则应沉入统一 SDK。建议用四层约束架构：
+桌面客户端是**受控的本地能力宿主**，负责用户身份接入、本地工作区授权、操作系统集成、Agent 进程托管、升级和崩溃恢复。模型协议、会话语义和事件定义放在 SDK 中。可以按四层组织：
 
 ```mermaid
 flowchart TB
@@ -111,7 +111,7 @@ export interface RuntimeSupervisor {
 
 验收条件：能画出至少四个信任域；Renderer 无 Node/Rust 原始能力；越界路径被拒绝；Runtime 被强杀后 UI 不退出且可恢复；两种平台都通过 macOS arm64/x64 与 Windows x64 的最小构建矩阵；ADR 包含实测 RSS、安装包、冷启动和团队维护成本。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Electron Process Model](https://www.electronjs.org/docs/latest/tutorial/process-model)
 - [Electron utilityProcess](https://www.electronjs.org/docs/latest/api/utility-process)

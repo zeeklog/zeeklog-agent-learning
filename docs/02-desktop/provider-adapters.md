@@ -1,6 +1,6 @@
 # 桌面端 Provider 适配：Codex SDK 与 Claude Agent SDK
 
-> 核心原则：Provider SDK 是易变的基础设施细节。UI 和 Runtime 只依赖本公司的 Session、Turn、Event、Approval 合约；官方 SDK 被限制在 adapter 包内。
+> Provider SDK 属于易变的基础设施细节。UI 和 Runtime 只依赖本地的 Session、Turn、Event、Approval 合约；官方 SDK 只出现在 adapter 包内。
 
 ## 1. 先澄清产品与名称
 
@@ -157,13 +157,13 @@ Adapter 的临时目录、配置目录和 session transcript 目录应按租户/
 - **并发运行共享 cwd/config**：一个 session 改变另一个权限。每 run 独立 execution context，限制全局配置读取。
 - **升级 SDK 同时升级协议**：问题无法定位。adapter 内部更新与公共合约版本分离。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联：[Provider 抽象](../04-sdk/provider-abstraction.md)、[合约与事件](../04-sdk/contracts-events.md)、[兼容与测试](../04-sdk/compatibility-testing.md)。
 
 练习：实现两个 fake provider 和一个真实 Provider smoke adapter。验收：同一 prompt 的事件都通过公共 schema；取消能到达底层；无 resume 能力时 UI 根据 capability 隐藏入口；未知事件使测试失败；日志无 prompt/key；锁定 SDK 升级后 golden trace 差异必须人工确认。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [OpenAI Codex TypeScript SDK source and samples](https://github.com/openai/codex/tree/main/sdk/typescript)

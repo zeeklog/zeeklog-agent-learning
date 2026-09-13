@@ -1,6 +1,6 @@
 # 统一 AI SDK：边界、分层与跨端形态
 
-> 统一 SDK 的价值不是把所有 Provider 压成一个 `chat()`，而是稳定企业自己的 Agent 语义：Session、Turn、Event、Tool、Approval、Context 与 Policy。供应商能力通过可协商扩展保留，平台能力通过端口注入。
+> SDK 固定企业自己的 Agent 语义：Session、Turn、Event、Tool、Approval、Context 与 Policy。Provider 特性通过可协商扩展保留，平台能力通过端口注入。
 
 ## 1. 设计目标与非目标
 
@@ -167,13 +167,13 @@ API 设计评审还应检查“可测试替换点”：时钟、ID、Transport�
 - **客户端做最终审批**：篡改客户端即可越权。Runtime 重新计算并绑定参数摘要。
 - **Provider 原始 JSON 进持久模型**：升级后无法回放。公共事件为主，原始 payload 仅做受限诊断引用。
 
-## 9. 关联知识、练习与验收
+## 9. 练习与验收
 
 依次学习：[合约与事件协议](contracts-events.md)、[Provider 抽象](provider-abstraction.md)、[Transport 与插件](transport-extensions.md)、[兼容与测试](compatibility-testing.md)。桌面宿主见 [客户端总体架构](../02-desktop/overview.md)。
 
 练习：为“读取当前 workspace、流式分析、请求一次写文件审批”画出四端部署图。验收：`contracts/core` 可在 Node 与浏览器构建；Web 无 shell 时不出现运行时崩溃；同一事件 reducer 驱动 Desktop/Web/IDE；密钥和原始 Provider 类型不跨可信边界；旧 client 可连接新 Runtime 并协商降级。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [Claude Agent SDK Overview](https://code.claude.com/docs/en/agent-sdk/overview)

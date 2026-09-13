@@ -1,6 +1,6 @@
 # 兼容性与测试：Contract Suite、回放与升级门禁
 
-> 对统一 SDK 而言，“能编译”只是最低门槛。真正要证明的是：Provider 换版本、Runtime 跨版本、Transport 断线、客户端跨端、进程崩溃时，公共状态机和安全不变量仍成立。
+> 编译通过只是起点。测试还要覆盖 Provider 换版本、Runtime 跨版本、Transport 断线、客户端跨端和进程崩溃，确认公共状态机与安全不变量仍成立。
 
 ## 1. 版本面与兼容承诺
 
@@ -157,13 +157,13 @@ Release gate 需产出机器可读 compatibility report：测试组合、版本/
 - **兼容测试全是 happy path**：真正事故发生在 accepted 未响应、工具已提交等不确定窗口。故障注入覆盖每个边界。
 - **Provider 升级与公共 major 同时发布**：无法判断回归来源。分步、独立版本、可回退。
 
-## 12. 关联知识、练习与验收
+## 12. 练习与验收
 
 关联：[Provider 抽象](provider-abstraction.md)、[事件协议](contracts-events.md)、[Transport/插件](transport-extensions.md)、[桌面分发恢复](../02-desktop/distribution.md)。
 
 练习：为 fake Provider 和 in-memory transport 建首个 conformance harness，再加入一个真实 adapter。验收：至少 30 个公共行为用例；随机事件测试可复现 seed；杀进程不会重复 tool side effect；N-1 client 与 N Runtime 双向兼容测试；真实 SDK 报告包含包/CLI/hash；篡改更新、伪造 IPC、日志 secret scan 全部进入发布门禁。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Semantic Versioning 2.0.0](https://semver.org/)
 - [JSON Schema Specification](https://json-schema.org/specification)

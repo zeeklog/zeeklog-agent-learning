@@ -13,7 +13,7 @@
   - [分布式系统语义](docs/01-foundations/distributed-systems.md)
   - [检索、上下文与评测基础](docs/01-foundations/retrieval-evaluation.md)
 
-- **02 · 企业级 AI 桌面客户端**
+- **02 · AI 桌面客户端**
   - [总体架构与技术选型](docs/02-desktop/overview.md)
   - [进程模型与 Typed IPC](docs/02-desktop/process-ipc.md)
   - [Coding Agent 本地主机](docs/02-desktop/coding-agent-host.md)
@@ -48,11 +48,12 @@
   - [Framework 集成边界](docs/05-frameworks/framework-integration.md)
   - [Framework Adapter 实战](docs/05-frameworks/hands-on-adapters.md)
 
-- **06 · 企业级 AI 平台**
+- **06 · AI 平台**
   - [平台总体架构](docs/06-platform/overview.md)
   - [任务控制平面](docs/06-platform/task-control-plane.md)
   - [控制面与数据面](docs/06-platform/control-data-plane.md)
-  - [企业模型网关](docs/06-platform/model-gateway.md)
+  - [模型网关](docs/06-platform/model-gateway.md)
+  - [企业级 AI Gateway 技术架构方案](docs/06-platform/enterprise-ai-gateway.md)
   - [执行环境生命周期](docs/06-platform/execution-environment-lifecycle.md)
   - [Tool / Skill / Agent 能力供应链](docs/06-platform/capability-supply-chain.md)
   - [多租户与治理](docs/06-platform/multitenancy-governance.md)
@@ -62,7 +63,7 @@
 
 - **07 · 架构与实战**
   - [端到端参考架构](docs/07-practice/reference-architecture.md)
-  - [贯穿式参考项目](docs/07-practice/reference-project.md)
+  - [参考项目](docs/07-practice/reference-project.md)
   - [可运行 Runtime Kernel](labs/runtime-kernel/README.md)
   - [架构 Katas](docs/07-practice/architecture-katas.md)
   - [生产检查清单](docs/07-practice/production-checklists.md)

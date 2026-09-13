@@ -1,6 +1,6 @@
 # 打包、签名、更新与崩溃恢复
 
-> 发布不是 CI 最后一个 `build` 步骤，而是一条安全供应链：可重现构建 → 平台签名 → 公证/信誉 → 更新签名 → 分批发布 → 可观测回滚 → 数据兼容。
+> 发布包含可重现构建、平台签名、公证、更新签名、分批发布、回滚和数据兼容。CI 的 `build` 只是其中一步。
 
 ## 1. 先建立产物矩阵
 
@@ -142,13 +142,13 @@ app.on("child-process-gone", (_e, details) => {
 - **新版本能安装但首次启动失败**：CI 只测试压缩包。干净 VM 上执行 install → launch → runtime handshake → update-from-N-1。
 - **坏版本自动重启风暴**：Supervisor 与应用互相拉起。崩溃预算、指数退避、safe mode、远程停止发放。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联：[总体架构](overview.md)、[IPC Supervisor](process-ipc.md)、[SDK 兼容测试](../04-sdk/compatibility-testing.md)。
 
 练习：设计 N-1 → N 的端到端发布演练。验收：两平台产物签名可由系统工具验证；macOS notarization/staple 通过；篡改一个字节后更新被拒；断网、代理、磁盘满、更新中断都有明确状态；坏版本可在 10 分钟内停止灰度；Runtime 在 turn 中被杀后不会重复执行已完成工具；safe mode 能导出脱敏诊断。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Electron Code Signing](https://www.electronjs.org/docs/latest/tutorial/code-signing)
 - [Electron Updating Applications](https://www.electronjs.org/docs/latest/tutorial/updates)

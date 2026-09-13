@@ -1,6 +1,6 @@
 # 进程模型与类型化 IPC
 
-> IPC 是桌面应用最重要的安全 API。目标不是让两个进程“能通信”，而是让每条消息可验证、可取消、可背压、可审计，并在版本不一致时确定性失败。
+> IPC 是桌面应用的安全 API。每条消息都要可验证、可取消、可背压、可审计；版本不一致时要明确失败。
 
 ## 1. 先分命令、查询与事件
 
@@ -176,13 +176,13 @@ IPC 收到快不代表 Runtime 消费得过来。Main/Runtime 之间设置有界
 - **只做 TypeScript 类型不做运行时校验**：跨进程输入本质不可信。边界处 schema parse，错误不回显堆栈。
 - **版本升级半完成**：新 UI 向旧 sidecar 发新命令。握手能力协商、双版本 contract test、原子切换。
 
-## 8. 关联知识、练习与验收
+## 8. 练习与验收
 
 关联：[安全与密钥](security.md)、[事件协议](../04-sdk/contracts-events.md)、[Transport 与扩展](../04-sdk/transport-extensions.md)。
 
 练习：实现一个可流式输出、取消和断线重放的 `agent.start`。验收：伪造 sender 被拒；1 MB payload 被拒；10 万条 delta 不使队列无界增长；取消后 1 秒内出现终态；杀掉 Runtime 后按 `lastSeenRunSeq` 恢复；新客户端连接旧 Runtime 时能明确降级而非崩溃。
 
-## 官方延伸阅读（核对时间：2026-08）
+## 官方资料（核对时间：2026-08）
 
 - [Electron IPC Tutorial](https://www.electronjs.org/docs/latest/tutorial/ipc)
 - [Electron Context Isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)

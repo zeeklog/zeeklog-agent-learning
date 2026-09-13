@@ -1,6 +1,6 @@
 # Context Engineering：预算、选择、压缩与可信边界
 
-Context 是一条有预算、来源、优先级和测试数据的数据管道。这里实现一个基础 Context Packer，并用显式约束检查压缩过程是否丢失关键信息。
+Context 是一条带预算、来源、优先级和测试数据的数据管道。本章实现一个基础 Context Packer，并用显式约束检查压缩是否丢失信息。
 
 ## 1. Context 不等于 Memory，也不等于 Prompt
 

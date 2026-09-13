@@ -1,12 +1,12 @@
-# 一手资料阅读清单：按问题读，不按链接收藏
+# 一手资料清单：按问题阅读
 
-> 官方文档描述“产品现在怎么用”，规范定义“实现必须/应该怎样”，论文帮助理解“为什么”。模型、SDK、协议和价格等易变事实，阅读时记录实际版本或核验日期。
+官方文档说明产品用法，规范说明实现要求，论文解释设计原因。模型、SDK、协议和价格会变化，阅读时记录实际版本或核验日期。
 
 ## 1. 三遍读法
 
 ### 第一遍：建立地图（20% 时间）
 
-只读目录、术语、architecture/overview、版本/兼容、安全章节。输出一页：
+先读目录、术语、architecture/overview、版本/兼容和安全章节，写下一页摘要：
 
 ```markdown
 对象：Run / Thread / Task / Tool / Resource
@@ -18,18 +18,18 @@
 
 ### 第二遍：沿关键路径（50% 时间）
 
-拿“请求 Tool → 审批 → 执行 → timeout → 恢复”逐页追踪。复制最小 schema/代码，改写成自己的 canonical contract，并记录外部术语映射。
+沿“请求 Tool → 审批 → 执行 → timeout → 恢复”这条路径阅读。取最小 schema/代码，改写成自己的 canonical contract，并记录术语映射。
 
 ### 第三遍：逆向找失败（30% 时间）
 
-只找 cancellation、retry、error、security、limits、deprecation、unknown field、long-running、stream reconnect。每读一项产出一个 contract test 或故障注入案例。
+专门查 cancellation、retry、error、security、limits、deprecation、unknown field、long-running 和 stream reconnect。每读一项，产出一个 contract test 或故障注入案例。
 
 ### 资料笔记模板
 
 ```yaml
 source: "URL"
 kind: "normative-spec | official-doc | source-code | paper"
-verified_at: "2026-08-30"
+verified_at: "YYYY-MM-DD"
 version_or_commit: "exact version/commit, not latest"
 applies_to: ["provider-adapter", "tool", "desktop"]
 normative_claims:
@@ -53,14 +53,14 @@ open_questions:
 | 5 | Desktop | §10 | renderer→host→sandbox 数据流与更新模型 |
 | 6 | Eval/运营 | §11、§12 | eval gate、SLO、upgrade runbook |
 
-每天 60～90 分钟：40 分钟原文、20 分钟映射、20 分钟写测试。只读不产出合约/测试，留存率很低。
+每天 60～90 分钟：40 分钟读原文，20 分钟做映射，20 分钟写测试。只阅读而不产出合约或测试，很难判断是否真正掌握。
 
 ### 2.1 Datawhale 两套路线
 
 - [Hello-Agents](https://github.com/datawhalechina/hello-agents)：按“基础 → 经典范式 → 框架与自研 → 记忆/上下文/协议/评测 → 综合案例”学习。对应本目录的章节映射见 [README](../../README.md#hello-agents)。
 - [Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub)：按 Stage 0～8 和 Project Ladder 学习，重点补 Agent Harness、Skills、浏览器 Agent、评测安全与发布。对应本目录的映射见 [README](../../README.md#agent-learning-hub)。
 
-两套路线都把“可运行项目”放在学习结果里。本地练习优先复用 [贯穿式参考项目](../07-practice/reference-project.md)，把外部示例转换成自己的事件、权限和验证合同。
+两套路线都要求完成可运行项目。本地练习优先复用 [参考项目](../07-practice/reference-project.md)，把外部示例转换成自己的事件、权限和验证合同。
 
 ## 3. OpenAI：Codex 与 Agents SDK
 
@@ -72,7 +72,7 @@ open_questions:
    - **重点**：TypeScript/Python 的 thread start/continue/resume、进程/运行时前提、sandbox preset。
    - **读法**：把 provider thread ID 映射为 opaque adapter state；不要让它替代平台 `runId`。
    - **产出**：Codex adapter contract，至少测 resume、cancel、sandbox、错误映射。
-   - **已核验事实**：2026-08-30 页面同时给出 TypeScript 与 Python 用法；开始实现时仍须再次核验。
+   - **页面记录**：2026-08-30 页面同时给出 TypeScript 与 Python 用法；开始实现时仍须再次核验。
 
 2. [Codex App Server](https://developers.openai.com/codex/app-server)
    - **重点**：富客户端的认证、Thread/Turn/Item、审批与事件协议；区分 stdio、Unix socket 与仍处实验状态的远程 WebSocket。
@@ -135,7 +135,7 @@ open_questions:
    - **性质**：规范入口；`latest` 会跳转到日期版本。
    - **核验**：2026-08-30 跳转到 `2026-07-28`，实现时应记录实际版本而不是只写 latest。
    - **第一遍**：[Architecture（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/architecture)、[Versioning（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)。
-   - **当前版本提醒**：2026-07-28 现代协议把版本/身份/capability 放在每个请求的 `_meta`，并以 `server/discover` 做可选预发现；`initialize` 属于旧版兼容路径。若采用不同日期版本，必须以该版本规范为准。
+   - **版本差异**：2026-07-28 版本把版本/身份/capability 放在每个请求的 `_meta`，并以 `server/discover` 做可选预发现；`initialize` 属于旧版兼容路径。采用其他版本时，以该版本规范为准。
    - **第二遍**：Base Protocol/Transport、Resources/Prompts/Tools、Cancellation/Progress/Error。
    - **第三遍**：Authorization 与 Security；特别验证 Tool description/annotation 不能被 host 当可信授权。
    - **产出**：Host/Client/Server、capability negotiation、Tool approval 威胁模型。
@@ -314,4 +314,4 @@ open_questions:
 - [ ] 阅读至少三篇可靠性论文，并能用于一个 ADR，而不是背结论。
 - [ ] Desktop 产出 renderer→host→sandbox 威胁模型。
 - [ ] OTel 产出 span/metric/redaction 规范，domain event 明确分离。
-- [ ] 为每个易变事实保留一手来源、实际版本或核验日期，并在 Contract Test 或实验记录中注明适用范围。
+- [ ] 为易变事实保留一手来源、实际版本或核验日期，并在 Contract Test 或实验记录中注明适用范围。

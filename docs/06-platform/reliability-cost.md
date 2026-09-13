@@ -87,7 +87,7 @@ const runCost =
 - **成本无归属**：月底只能看到 provider 总账。usage event 必须与 run/tenant/release 关联并对账。
 - **取消等于断开 socket**：后台继续烧钱/写数据。任务状态与传输状态分离。
 
-## 7. 关联知识、练习与验收
+## 7. 练习与验收
 
 关联 SRE error budget、排队论、分布式幂等、backpressure、circuit breaker、tail-based sampling、FinOps。结合[控制面/数据面](control-data-plane.md)理解 cell 容量。
 
@@ -95,7 +95,7 @@ const runCost =
 
 验收：能按 run 对账到 provider 用量误差 <1%；重复副作用为 0；遥测中断不阻塞数据面且可缓冲；过载时高优先级 SLO 保持目标；降级前后以同一 eval 证明质量下限。
 
-## 官方延伸阅读
+## 官方资料
 
 - [Google SRE Workbook：Implementing SLOs](https://sre.google/workbook/implementing-slos/)
 - [OpenTelemetry GenAI Semantic Conventions](https://github.com/open-telemetry/semantic-conventions-genai)
