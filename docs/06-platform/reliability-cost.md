@@ -28,7 +28,7 @@ Trace(run)
 
 prompt、system instructions、tool args/results 可能含 PII/secret。默认只记录长度、hash、分类、token 与受控摘要；内容采集必须 opt-in、脱敏、加密、短保留并记录谁解密访问。
 
-## 3. 全链路可靠性模式
+## 3. 端到端可靠性模式
 
 每层只做自己能判断的重试，所有层共享 retry budget。429/暂态 5xx 可指数退避 + jitter；policy deny、schema invalid、预算超限不可重试；超时后不确定的写操作先查询 operation 状态，不能盲目重放。
 

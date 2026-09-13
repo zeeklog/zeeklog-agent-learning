@@ -1,12 +1,10 @@
-# 企业级 AI Gateway 技术架构方案 - Neo Chan
+# 企业级 AI Gateway：路由、账号池与故障处理
 
-这套设计的核心是：
-
-> **New API 负责“请求应该进入哪个资源池”，Sub2API 负责“本次请求应该使用哪个账号”。**
+New API 决定请求进入哪个资源池，Sub2API 决定本次请求使用哪个账号。两层职责分开，账号池的状态也不会泄漏到企业入口。
 
 ## 1. 需求边界
 
-本方案只包含以下组件：
+架构只包含以下组件：
 
 ```text
 Electron Agent / 企业应用
@@ -25,7 +23,7 @@ New API 单实例
           +--> Kimi / Moonshot 官方接口
 ```
 
-核心分工：
+组件分工：
 
 | 组件         | 定位                                                  |
 | ---------- | --------------------------------------------------- |
@@ -35,11 +33,11 @@ New API 单实例
 | PostgreSQL | New API 和 Sub2API 的持久化数据                            |
 | 官方渠道       | DeepSeek、Qwen、Kimi 等官方 API 直连                       |
 
-本方案不额外引入独立的 AI Router、Agent Runtime、Workflow、Kafka、ClickHouse 或复杂控制面。
+这里不额外引入独立的 AI Router、Agent Runtime、Workflow、Kafka、ClickHouse 或复杂控制面。
 
 ---
 
-## 2. 核心设计原则
+## 2. 设计原则
 
 ### 2.1 New API 只做企业入口
 
@@ -105,7 +103,7 @@ Account C
 
 这是整个架构最重要的两级调度关系。
 
-### 2.3 New API 单实例
+### 2.3 New API 保持单实例
 
 当前方案不做 New API 集群。
 
@@ -210,7 +208,7 @@ New API
 DeepSeek 官方 API
 ```
 
-### 4.3 完整请求步骤
+### 4.3 请求步骤
 
 ```text
 1. 客户端请求 New API

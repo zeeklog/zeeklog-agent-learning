@@ -1,6 +1,6 @@
 # Transport 与扩展机制：跨端连接和安全插件
 
-> Transport 只负责可靠、安全地搬运公共命令与事件；它不解释 Agent 语义。插件则是受能力约束的扩展单元，不是能在 Runtime 里任意 `require()` 的代码包。
+> Transport 只负责可靠、安全地搬运公共命令与事件，不解释 Agent 语义。插件是受能力约束的扩展单元，不能在 Runtime 里任意 `require()` 代码包。
 
 ## 1. Transport 端口
 
@@ -140,7 +140,7 @@ export interface PluginContext {
 
 插件包需签名/可信发布源、lockfile/SBOM、依赖扫描与撤销列表。签名说明来源，不说明安全；还需代码审查、沙箱和权限。插件自动更新不能绕过管理员批准的 major/权限变化。
 
-## 8. Hook 不是任意中间件
+## 8. Hook 的边界
 
 Hook 事件分 `beforeTool`（可 deny/requireApproval，但必须有超时）、`afterTool`（只能附加观察结果）、`onEvent`（异步审计）。多个决策 hook 采用明确组合规则：deny 优先，requireApproval 次之，所有 allow 才允许。禁止插件改变其他插件 payload 或吞掉 terminal event。
 
@@ -177,7 +177,7 @@ WebSocket/SSE 的代理可能有空闲超时；heartbeat 间隔由服务端协�
 
 练习：实现 in-memory、WebSocket fake、Browser MV3 三种 transport，以及只读 Git 插件。验收：所有 transport 通过同一 conformance suite；随机断线后无漏/重放副作用；慢消费者内存有界；伪造 extension ID/native client 被拒；插件尝试访问 scope 外路径与域名失败；插件崩溃不结束 Runtime；major/新增权限更新需要重新审批。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Chrome Manifest V3](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3)
 - [Chrome Native Messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging)

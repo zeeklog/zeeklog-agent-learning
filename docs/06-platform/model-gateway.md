@@ -265,7 +265,7 @@ tool arguments delta 只有在完整 block/finish 后才解析和 schema 校验�
 
 平台边界见[企业 AI 平台总览](overview.md)、[控制面与数据面](control-data-plane.md)；租户与驻留见[多租户治理](multitenancy-governance.md)，SLO/预算见[可靠性与成本](reliability-cost.md)，威胁模型见[安全威胁模型](security-threat-model.md)。上层统一合同见[Provider 抽象](../04-sdk/provider-abstraction.md)与[事件合同](../04-sdk/contracts-events.md)。
 
-## 官方资料（核对时间：2026-08-30）
+## 参考资料
 
 - [OpenAI Responses API TypeScript reference](https://developers.openai.com/api/reference/typescript/resources/responses/methods/create)、[OpenAI model / prompt-caching guidance](https://developers.openai.com/api/docs/guides/latest-model)
 - [Anthropic Messages API](https://platform.claude.com/docs/en/api/messages/create)、[Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming)、[Rate limits](https://platform.claude.com/docs/en/api/rate-limits)

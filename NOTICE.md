@@ -20,8 +20,8 @@ references for study planning. No affiliation or endorsement is implied.
 | [datawhalechina/Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) | `dddf777dde6788228136862f270203424a28efbc` | [MIT](https://opensource.org/license/mit/) | Public link, Stage/Project Ladder mapping, and study index only |
 
 The revisions above record the upstream versions consulted when the route
-mapping was prepared. Upstream projects may change; consult their repositories
-for current content, notices, and license terms.
+mapping was prepared. The original content and current license terms remain
+with the respective upstream repositories.
 
 ## License for local content
 

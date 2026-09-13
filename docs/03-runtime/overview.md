@@ -1,10 +1,10 @@
 # Agent Runtime 总览：执行语义、系统边界与控制面
 
-Agent Runtime 为产品提供任务语义，处理模型、网络、工具和进程的不确定性。本章先定义 Run、Step、Event、Tool 与 Workflow，再划定桌面 Runtime 和后端服务的边界。
+Agent Runtime 为产品提供任务语义，处理模型、网络、工具和进程的不确定性。这里先定义 Run、Step、Event、Tool 与 Workflow，再划定桌面 Runtime 和后端服务的边界。
 
 ## 1. Runtime 到底负责什么
 
-模型 SDK 解决的是“发出一次推理请求”；AI Runtime 解决的是“一项工作如何在不可靠的模型、网络、工具和进程之上可靠完成”。它位于产品与模型供应商之间，向上提供稳定的任务语义，向下吸收供应商差异。
+模型 SDK 负责发出一次推理请求；AI Runtime 负责让一项工作在不可靠的模型、网络、工具和进程之上完成。它位于产品与模型供应商之间，向上提供任务语义，向下吸收供应商差异。
 
 Runtime 至少要回答以下问题：
 
@@ -32,7 +32,7 @@ flowchart TB
   MEM --> STORE[(SQLite / Server DB / Object Store)]
 ```
 
-## 2. 六个核心抽象与边界
+## 2. 六个抽象与边界
 
 ### 2.1 Task 与 Run/Attempt：业务承诺和执行尝试
 
@@ -91,7 +91,7 @@ Tool 只是能力的模型可见描述；Capability 还应绑定主体、资源�
 
 测试退出码、真实 diff、外部系统回执、环境指纹等构成 Evidence。独立 Verifier 将验收条件映射到 Evidence；DeliveryBundle 同时携带结果、验证程度、限制和未知副作用。没有 Evidence 的模型陈述只能标为建议或未验证，不能作为“已完成”。
 
-## 3. 推荐分层
+## 3. 分层
 
 | 层 | 主要职责 | 不应承担 |
 | --- | --- | --- |
@@ -103,7 +103,7 @@ Tool 只是能力的模型可见描述；Capability 还应绑定主体、资源�
 | Adapters | OpenAI/Anthropic/本地模型协议转换 | 泄漏到上层领域模型 |
 | Governance | trace、metric、eval、成本、安全审计 | 影响核心执行确定性 |
 
-这个分层的关键不是“多建几层 class”，而是保持替换边界：更换模型不应迁移数据库；更换 Workflow 引擎不应改变客户端事件协议；增加 Web/IDE 端不应复制权限规则。
+分层的目的在于保持替换边界：更换模型不应迁移数据库；更换 Workflow 引擎不应改变客户端事件协议；增加 Web/IDE 端不应复制权限规则。
 
 ## 4. 桌面端的双平面架构
 

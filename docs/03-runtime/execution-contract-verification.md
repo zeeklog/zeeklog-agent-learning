@@ -1,6 +1,6 @@
 # 执行契约与验证：从“模型说完成了”到“证据证明完成了”
 
-Agent Runtime 需要把用户目标编译为可执行、可授权、可验证、可交付的契约。本章定义 `TaskSpec → Plan → Authorized Intent → Evidence → DeliveryBundle` 链路，并把计划、执行与最终裁决拆开。
+Agent Runtime 需要把用户目标编译为可执行、可授权、可验证、可交付的契约。这里使用 `TaskSpec → Plan → Authorized Intent → Evidence → DeliveryBundle`，把计划、执行与最终裁决分开。
 
 Agent Runtime 最危险的完成条件是：模型输出了“已经修复”。它只证明生成过一句话，没有证明目标文件确实改变、测试在目标环境通过、外部系统完成写入，也没有证明执行内容仍是用户批准的内容。
 
@@ -24,7 +24,7 @@ flowchart LR
   CE --> D[DeliveryBundle]
 ```
 
-## 1. 先建立对象层级：Goal 不是 Plan，Plan 也不是事实
+## 1. 对象层级：Goal、Plan 与事实
 
 | 对象 | 回答的问题 | 是否可变 | 权威来源 |
 | --- | --- | --- | --- |
@@ -40,9 +40,9 @@ flowchart LR
 
 ## 2. TaskSpec：把自然语言编译成机器可检查的契约
 
-### 2.1 一个可落地的 TypeScript Schema
+### 2.1 TypeScript Schema
 
-以下 schema 刻意分离“程序可判定”和“需要评审”。`review` 条目不是自动通过的漏洞，而是明确进入人工或独立评审队列。
+以下 schema 把“程序可判定”和“需要评审”分开。`review` 条目不会自动通过，而是进入人工或独立评审队列。
 
 ```ts
 import { z } from "zod";
@@ -347,7 +347,7 @@ interface VerificationResult {
 
 ## 7. 验证流水线：确定性证据优先
 
-推荐按成本与确定性从前到后执行，并允许依赖无关的检查并行：
+按成本与确定性从前到后执行，并允许相互独立的检查并行：
 
 1. Artifact 完整性、schema 与摘要；
 2. 禁止路径、secret、二进制和变更规模等 diff gate；
@@ -673,4 +673,4 @@ describe("execution contract", () => {
 - [持久化与 SQLite](persistence-sqlite.md)：CAS append、outbox、effect receipt 与恢复。
 - [可观测性与 Evals](observability-evals.md)：Evidence 与 Trace 的差异、离线/在线质量门禁。
 - [统一事件契约](../04-sdk/contracts-events.md)：跨 Provider 的终态、Tool 和 structured output 事件。
-- [端到端参考架构](../07-practice/reference-architecture.md)：把本章控制点放回桌面—云端全链路。
+- [端到端参考架构](../07-practice/reference-architecture.md)：把这些控制点放回桌面—云端的端到端链路。

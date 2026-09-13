@@ -2,9 +2,9 @@
 
 AI 桌面客户端要明确可信边界、桌面容器和进程分工。本地高权限能力留在受控 Host，Web、Extension 与 IDE 共用的协议放进 SDK。
 
-## 1. 先定义桌面端的职责
+## 1. 桌面端的职责
 
-桌面客户端是**受控的本地能力宿主**，负责用户身份接入、本地工作区授权、操作系统集成、Agent 进程托管、升级和崩溃恢复。模型协议、会话语义和事件定义放在 SDK 中。可以按四层组织：
+桌面客户端是**受控的本地能力宿主**，负责用户身份接入、本地工作区授权、操作系统集成、Agent 进程托管、升级和崩溃恢复。模型协议、会话语义和事件定义放在 SDK 中。架构可分为四层：
 
 ```mermaid
 flowchart TB
@@ -16,7 +16,7 @@ flowchart TB
   Runtime --> Data[(会话事件日志/索引)]
 ```
 
-关键判断是：UI 被 XSS 攻破后，攻击者能做什么？如果答案是“调用任意 Node API、读取任意路径、启动任意命令”，架构已经失败。Renderer 只能表达业务意图，例如 `workspace.select`、`agent.cancel`，不能得到 `fs`、`shell`、原始 IPC 或长期密钥。
+先问一个问题：UI 被 XSS 攻破后，攻击者能做什么？如果答案是“调用任意 Node API、读取任意路径、启动任意命令”，架构已经失败。Renderer 只能表达业务意图，例如 `workspace.select`、`agent.cancel`，不能得到 `fs`、`shell`、原始 IPC 或长期密钥。
 
 ## 2. Electron 与 Tauri 2 如何选
 
@@ -111,7 +111,7 @@ export interface RuntimeSupervisor {
 
 验收条件：能画出至少四个信任域；Renderer 无 Node/Rust 原始能力；越界路径被拒绝；Runtime 被强杀后 UI 不退出且可恢复；两种平台都通过 macOS arm64/x64 与 Windows x64 的最小构建矩阵；ADR 包含实测 RSS、安装包、冷启动和团队维护成本。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Electron Process Model](https://www.electronjs.org/docs/latest/tutorial/process-model)
 - [Electron utilityProcess](https://www.electronjs.org/docs/latest/api/utility-process)

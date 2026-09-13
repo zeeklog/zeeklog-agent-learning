@@ -1,6 +1,6 @@
 # Agent Runtime 能力地图
 
-## 1. Runtime 的产出
+## 1. Runtime 负责的五个平面
 
 Agent Runtime 同时处理五个平面。只把 Electron 与模型 API 接在一起，覆盖不了任务恢复、工具副作用和治理边界。
 
@@ -16,21 +16,21 @@ flowchart TB
   CONTROL -.策略与版本.-> EXEC
 ```
 
-五个平面要有清楚的边界、稳定的协议和明确的恢复路径。产品界面显示任务结果；Runtime 还要说明模型超时、工具重复执行、旧 Worker 复活、审批等待、桌面进程重启、策略更新和框架替换时发生了什么。
+五个平面各自负责不同的状态和控制。除了显示任务结果，Runtime 还要说明模型超时、工具重复执行、旧 Worker 复活、审批等待、桌面进程重启、策略更新和框架替换时会发生什么。
 
 ## 2. 系统基础如何映射到 Runtime
 
-这条路线默认读者理解至少一类复杂客户端或服务端系统。下表用于定位可复用的技术基础，以及需要补齐的 Runtime 视角。
+地图假定已经接触过至少一类复杂客户端或服务端系统。下表用来定位可复用的技术基础，以及还要补上的 Runtime 视角。
 
-| 系统基础 | 可直接复用 | 需要补齐的 Runtime 视角 |
+| 系统基础 | 可直接复用 | 还要补上的 Runtime 视角 |
 | --- | --- | --- |
 | Electron 跨 Windows/macOS/Linux | 进程隔离、IPC、打包、系统集成 | AI Sidecar、长任务恢复、工具权限、密钥与本地数据治理 |
 | React / React Native / 微前端 | 多端抽象、状态管理、插件化、组件边界 | SDK Contract、Capability Negotiation、Event-driven UI |
 | Node.js / NestJS / 微服务 | API、并发、队列、模块化 | Durable Execution、幂等、背压、租户隔离、SLO |
-| RAG / LangChain / Dify | 检索链路、Agent 试点、场景落地 | Context Engineering、Eval、Prompt Injection 防护、框架退出策略 |
+| RAG / LangChain / Dify | 检索链路、Agent 试点、场景应用 | Context Engineering、Eval、Prompt Injection 防护、框架退出策略 |
 | 私有 npm、CI/CD、Sonar、SOP | 平台化、质量门禁、规模化 | SDK 版本治理、兼容矩阵、策略即代码、Runtime 回放测试 |
 
-主线不重复 JavaScript、React 等通用入门，集中补齐**执行语义、模型接口差异、持久化状态机、安全策略与可观测评测**。若自测发现桌面进程模型或分布式系统基础不足，再回到对应基础章补课。
+主线不重复 JavaScript、React 等通用入门，集中补上**执行语义、模型接口差异、持久化状态机、安全策略与可观测评测**。若自测发现桌面进程模型或分布式系统基础不足，再回到对应基础章补课。
 
 ## 3. 能力成熟度与进阶目标
 
@@ -47,8 +47,8 @@ flowchart TB
 | Tool Runtime | L4 | Schema、权限、审批、幂等、超时、隔离、审计、结果裁剪形成统一规范 |
 | Unified SDK | L4 | Provider/Transport/Storage/UI 解耦；稳定事件协议；跨端 capability negotiation |
 | Framework Strategy | L3 | 能用基准场景做 Spike，形成 Build/Buy/Wrap 结论和退出方案 |
-| Platform Governance | L3 | 控制面/数据面、多租户、身份、策略、成本、SLO 与发布治理能闭环 |
-| Environment & Supply Chain | L3 | 环境指纹、Setup/Agent 分权、清理证明、Tool/Skill/Agent 签名与撤销能闭环 |
+| Platform Governance | L3 | 控制面/数据面、多租户、身份、策略、成本、SLO 与发布治理能连起来 |
+| Environment & Supply Chain | L3 | 环境指纹、Setup/Agent 分权、清理证明、Tool/Skill/Agent 签名与撤销能连起来 |
 | Security | L3 | 完成桌面端 + Runtime + Tool + MCP 的 Threat Model，覆盖 Prompt Injection |
 | Observability & Eval | L4 | Trace、Metric、Log、事件回放、离线/在线 Eval 和发布门禁统一设计 |
 
@@ -97,7 +97,7 @@ flowchart LR
 - Tool 权限、审批、审计与 Prompt Injection 防线。
 - OpenTelemetry 风格 Trace 和最小 Eval 数据集。
 
-### P1：完成首条纵向链路后补齐
+### P1：完成首条纵向链路后补上
 
 - Workflow versioning、补偿、并行分支、人工节点。
 - 多租户控制面、模型路由、配额与成本归因。
@@ -113,7 +113,7 @@ flowchart LR
 - 完整 BPMN 引擎或通用低代码平台。
 - 多 Agent 社会模拟等缺少明确业务收益的复杂模式。
 
-判断原则：Agent Runtime 覆盖产品规模化落地，但不要求自行实现全部基础设施。
+判断原则：Agent Runtime 要覆盖产品规模化应用，但不要求自行实现全部基础设施。
 
 ## 6. 建立学习基线
 
@@ -139,7 +139,7 @@ flowchart LR
 
 总分低于 15：完整执行 12 周路线；15～23：跳过熟悉内容，但完成所有 P0 实验；24 以上：直接做参考项目和架构 Katas，用失败注入验证深度。
 
-## 7. 本章练习与验收
+## 7. 练习与验收
 
 1. 为目标 Runtime 方案建立能力雷达，记录当前覆盖、目标等级、已有工程证据和待补缺口。
 2. 从过去一个 Electron 或 RAG 项目中找一个故障，分别用 Client、Runtime、SDK、Platform 四个平面重新归因。
@@ -147,4 +147,4 @@ flowchart LR
 
 验收标准：能在 10 分钟架构评审中讲清五个平面的边界，指出三项主要系统风险，并给出对应的工程控制和验证证据。
 
-下一章：[12 周学习计划 →](../../docs/00-roadmap/12-week-plan.md)
+下一章：[12 周学习计划 →](12-week-plan.md)

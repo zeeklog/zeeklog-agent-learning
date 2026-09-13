@@ -68,7 +68,7 @@ async function authorize(ctx: TrustedContext, req: ToolIntent) {
 | 队列 | age、depth、tenant share | WFQ、deadline、优先级与丢弃策略 |
 | 存储 | 向量/Artifact/trace bytes | TTL、归档、hard quota |
 
-## 5. 治理闭环
+## 5. 治理流程
 
 每个 Agent release 要有 owner、业务目的、风险等级、数据清单、允许工具、评测集、SLO、预算、保留期、应急联系人和下线日期。风险分级决定控制：低风险读助手可自动发布；能发送邮件、改生产或处理敏感数据的 Agent 需要安全评审、人工审批点、红队和更短凭据。
 

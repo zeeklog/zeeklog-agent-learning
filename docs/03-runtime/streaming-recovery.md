@@ -156,7 +156,7 @@ export class BoundedStream implements AsyncIterable<StreamItem> {
 }
 ```
 
-这个示例明确是 MPSC（多 producer、单 consumer），同时限制 item 数与 UTF-8 字节数；writer 使用 waiter 队列，不会互相覆盖。生产实现还需处理 AbortSignal、异常关闭、text 分块上限与 waiter 清理。跨进程 IPC 推荐 `MessagePort`/流式协议，给每个 renderer 独立订阅缓冲；renderer 消失不能阻塞 Run 本身。
+这个示例使用 MPSC（多 producer、单 consumer），同时限制 item 数与 UTF-8 字节数；writer 使用 waiter 队列，不会互相覆盖。生产实现还需处理 AbortSignal、异常关闭、text 分块上限与 waiter 清理。跨进程 IPC 推荐 `MessagePort`/流式协议，给每个 renderer 独立订阅缓冲；renderer 消失不能阻塞 Run 本身。
 
 ## 5. 取消是端到端协议
 
@@ -188,7 +188,7 @@ class CancellationScope {
 
 ## 6. 重试与恢复：从最后一个已提交事实继续
 
-恢复流程不是“重新发送最后一条用户消息”，而是：
+恢复从最后一个已提交事实开始，而不是重新发送最后一条用户消息：
 
 1. 获取 Run lease，防止两个 worker 同时恢复；
 2. 读取最新兼容 snapshot 与其后事件；
@@ -246,7 +246,7 @@ function applyClientEvent(state: UIState, e: RunEvent): UIState {
 
 故障注入比普通 happy path 更重要：随机在每个事件提交前后 kill worker；让 UI 每秒只消费一条而模型每秒生产百条；在 tool 成功、receipt 上报前断网；让 SSE 重复、乱序和缺失。
 
-**练习**：实现一个 SSE `/events` 端点，支持 `Last-Event-ID`。在“历史补齐到实时订阅”交界处注入新事件，证明不会漏；客户端重复连接十次，最终投影与一次连接完全一致。
+**练习**：实现一个支持 `Last-Event-ID` 的 SSE `/events` 端点。在“历史补齐到实时订阅”的交界处注入新事件，验证不会漏；让客户端重复连接十次，确认最终投影与一次连接完全一致。
 
 **验收点**：
 

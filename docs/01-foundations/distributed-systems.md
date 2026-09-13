@@ -20,7 +20,7 @@ Runtime 必须回答：
 | at-least-once | 未确认就重投 | 事件消费、可幂等任务 | 必须处理重复 |
 | effectively-once | at-least-once + 幂等/去重，让业务效果近似一次 | 写文件、创建工单 | 依赖幂等键、事务或状态核对 |
 
-不要声称“exactly-once Tool execution”，除非副作用和 Runtime 事件能处于同一原子事务——跨 SaaS、Shell、文件系统时通常做不到。更诚实的状态是 `outcome_unknown`，由状态核对、补偿或人工处理。
+不要声称“exactly-once Tool execution”，除非副作用和 Runtime 事件能处于同一原子事务；跨 SaaS、Shell、文件系统时通常做不到。更准确的状态是 `outcome_unknown`，由状态核对、补偿或人工处理。
 
 ## 3. Event Sourcing：保存事实，不保存“当前感觉”
 
@@ -182,7 +182,7 @@ function fullJitter(attempt: number, policy: RetryPolicy) {
 3. 启动两个 worker 竞争同一 Run，证明 fencing token 阻止旧 owner 写入。
 4. 在 100 次随机 kill 测试中证明恢复不丢状态，并统计 `outcome_unknown`。
 
-验收：你不再用“失败就重试”“消息只消费一次”描述可靠性，而能明确每个边界的事实、交付语义和调解路径。
+验收：不再用“失败就重试”“消息只消费一次”描述可靠性，而能说清每个边界的事实、交付语义和调解路径。
 
 ## 延伸阅读
 
@@ -190,4 +190,4 @@ function fullJitter(attempt: number, policy: RetryPolicy) {
 - [Temporal 文档：Durable Execution](https://docs.temporal.io/temporal)
 - [OpenTelemetry：Trace 规范](https://opentelemetry.io/docs/specs/otel/trace/)
 
-下一章：[检索、上下文与评测基础 →](../../docs/01-foundations/retrieval-evaluation.md)
+下一章：[检索、上下文与评测基础 →](retrieval-evaluation.md)

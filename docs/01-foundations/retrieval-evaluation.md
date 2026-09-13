@@ -2,7 +2,7 @@
 
 ## 1. RAG 的组成
 
-检索增强系统至少有八个可独立失败的环节：采集、解析、切块、索引、权限过滤、召回、重排和上下文组装。回答错误时，要区分是知识源没有答案、索引过期、权限过滤错误、候选未召回、重排错误、Context 丢失、模型没有采用证据，还是输出无法验证。
+检索增强系统包含八个可独立失败的环节：采集、解析、切块、索引、权限过滤、召回、重排和上下文组装。回答错误时，要区分是知识源没有答案、索引过期、权限过滤错误、候选未召回、重排错误、Context 丢失、模型没有采用证据，还是输出无法验证。
 
 ```mermaid
 flowchart LR
@@ -164,9 +164,9 @@ Judge 适合评价开放文本的完整性、相关性和风格，但不应独�
 - 用人工标注集校准 Judge，测一致性、偏差和位置/长度敏感性。
 - 高风险安全规则使用 deterministic policy，不让 Judge 最终授权。
 
-## 10. 在线反馈与可观测闭环
+## 10. 在线反馈与可观测性
 
-离线 Eval 防止已知退化；在线指标发现分布变化。把 `eval_case_id`（离线）或 `run_id`（在线）和相同事件/Trace schema 连接，才能从线上失败沉淀新 case。
+离线 Eval 防止已知退化；在线指标发现分布变化。把 `eval_case_id`（离线）或 `run_id`（在线）和相同事件/Trace schema 连接，才能把线上失败转成新 case。
 
 发布比较至少分桶：tenant、场景、model profile、tool、客户端版本、语言、上下文长度。平均成功率无法发现某个 Windows 版本或某类长上下文的退化。
 
@@ -194,4 +194,4 @@ Judge 适合评价开放文本的完整性、相关性和风格，但不应独�
 - [BEIR：异构信息检索基准](https://arxiv.org/abs/2104.08663)
 - [OWASP：LLM Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
 
-下一模块：[AI 桌面客户端 →](../../docs/02-desktop/overview.md)
+下一模块：[AI 桌面客户端 →](../02-desktop/overview.md)

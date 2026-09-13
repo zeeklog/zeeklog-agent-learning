@@ -2,7 +2,7 @@
 
 > SDK 固定企业自己的 Agent 语义：Session、Turn、Event、Tool、Approval、Context 与 Policy。Provider 特性通过可协商扩展保留，平台能力通过端口注入。
 
-## 1. 设计目标与非目标
+## 1. 设计目标与边界
 
 目标：同一 Runtime Core 可被 Windows/macOS 桌面端、Web、Browser Extension、IDE Extension 调用；Provider 替换不影响 UI 状态机；网络、本地进程、测试内存传输共享协议；安全策略位于可信执行端；升级有兼容窗口。
 
@@ -93,7 +93,7 @@ type CapabilityDescriptor = {
 
 高级 Provider 特性使用带命名空间的扩展，如 `openai.codex.reasoning_effort`，但公共 SDK 只接受已注册 schema 的扩展值；未知扩展不可穿透到供应商请求，避免任意参数注入。
 
-## 5. 四类宿主如何落地
+## 5. 四类宿主的接入方式
 
 | 宿主 | SDK 运行位置 | Transport | 本地能力原则 |
 |---|---|---|---|
@@ -173,7 +173,7 @@ API 设计评审还应检查“可测试替换点”：时钟、ID、Transport�
 
 练习：为“读取当前 workspace、流式分析、请求一次写文件审批”画出四端部署图。验收：`contracts/core` 可在 Node 与浏览器构建；Web 无 shell 时不出现运行时崩溃；同一事件 reducer 驱动 Desktop/Web/IDE；密钥和原始 Provider 类型不跨可信边界；旧 client 可连接新 Runtime 并协商降级。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [Claude Agent SDK Overview](https://code.claude.com/docs/en/agent-sdk/overview)

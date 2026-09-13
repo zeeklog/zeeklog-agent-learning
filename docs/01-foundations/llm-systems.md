@@ -1,6 +1,6 @@
 # LLM 系统原理：Agent Runtime 的模型基础
 
-## 1. 先理解推理约束
+## 1. 推理约束
 
 设计 Agent Runtime 不需要重新实现 Transformer，但要知道推理方式如何影响成本、延迟、状态和失败边界。模型在有限上下文中按 token 自回归生成结果，不会自动记住上一次调用，也不是确定性函数。输入相同，模型版本、采样配置或服务端实现不同，输出仍可能不同。
 
@@ -21,7 +21,7 @@ Token 不是字符。不同 tokenizer 对中文、代码、JSON、空格的切�
 - 工具返回 2 MB 日志并不意味着模型能有效使用；需要裁剪、结构化或保存为 Artifact 后只传摘要和引用。
 - Token 估算器只能用于预规划，Provider 返回的 usage 才是计费与归因事实。
 
-建立显式预算，而不是调用前才发现超限：
+调用前先建立显式预算，避免运行到一半才发现超限：
 
 ```ts
 type ContextPart = {
@@ -182,4 +182,4 @@ Capability 来自 Adapter 的静态声明、运行时探测和控制面覆盖。
 - [Anthropic 文档：Context windows](https://docs.anthropic.com/en/docs/build-with-claude/context-windows)
 - [Anthropic 文档：Prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 
-下一章：[模型接口、流式与结构化输出 →](../../docs/01-foundations/model-io.md)
+下一章：[模型接口、流式与结构化输出 →](model-io.md)

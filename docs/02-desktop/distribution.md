@@ -2,9 +2,9 @@
 
 > 发布包含可重现构建、平台签名、公证、更新签名、分批发布、回滚和数据兼容。CI 的 `build` 只是其中一步。
 
-## 1. 先建立产物矩阵
+## 1. 产物矩阵
 
-Windows/macOS 至少明确以下矩阵，不能拿开发机产物代替发布验证：
+Windows/macOS 至少要明确以下矩阵，开发机产物不能代替发布验证：
 
 | 平台 | 架构 | 常见产物 | 发布要求 |
 |---|---|---|---|
@@ -148,7 +148,7 @@ app.on("child-process-gone", (_e, details) => {
 
 练习：设计 N-1 → N 的端到端发布演练。验收：两平台产物签名可由系统工具验证；macOS notarization/staple 通过；篡改一个字节后更新被拒；断网、代理、磁盘满、更新中断都有明确状态；坏版本可在 10 分钟内停止灰度；Runtime 在 turn 中被杀后不会重复执行已完成工具；safe mode 能导出脱敏诊断。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Electron Code Signing](https://www.electronjs.org/docs/latest/tutorial/code-signing)
 - [Electron Updating Applications](https://www.electronjs.org/docs/latest/tutorial/updates)

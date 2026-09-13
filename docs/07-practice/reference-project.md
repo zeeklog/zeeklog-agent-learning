@@ -1,10 +1,10 @@
 # 参考项目：构建一个可恢复的 Runtime Kernel
 
-> 用一个 2～4 周可完成的 TypeScript monorepo，完成“SDK → 状态机 → Provider → 幂等 Tool → 事件/恢复 → Trace”这条链。项目先验证语义，不追求 UI 数量或框架数量。
+> 用一个预计 2～4 周完成的 TypeScript monorepo，验证“SDK → 状态机 → Provider → 幂等 Tool → 事件/恢复 → Trace”这条链。重点是执行语义，不是 UI 或框架数量。
 
 ## 1. 可运行起点与最终演示
 
-仓库会提供一个最小纵切实现：[labs/runtime-kernel/README.md](../../labs/runtime-kernel/README.md)。先运行它观察事件序列，再按本章把内核扩展为 monorepo。该 lab 使用内存状态来演示 reducer、幂等键和故障分支；“重启”只表示在同一测试进程内重建 Coordinator，**不代表进程崩溃后的 durable recovery**。完成 M4、换成 SQLite/PostgreSQL 并运行真实子进程 kill/restart 测试后，才能宣称进程级恢复。最终项目应支持：
+最小纵切实现位于 [labs/runtime-kernel/README.md](../../labs/runtime-kernel/README.md)。先运行它观察事件序列，再把内核扩展为 monorepo。该 lab 使用内存状态演示 reducer、幂等键和故障分支；“重启”只表示在同一测试进程内重建 Coordinator，**不代表进程崩溃后的 durable recovery**。完成 M4、换成 SQLite/PostgreSQL 并运行真实子进程 kill/restart 测试后，才能宣称进程级恢复。最终项目应支持：
 
 1. Desktop/CLI 发送“读取 `README.md` 并生成摘要”；
 2. Unified SDK 返回 `runId`，并按 `seq` 流式订阅；

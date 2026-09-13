@@ -2,7 +2,7 @@
 
 ## 1. 集成原则
 
-框架集成要保护领域层的稳定语义。领域层只认识任务、事件、工具意图、审批与 Artifact；adapter 处理框架特有的 message、stream、checkpoint 与异常。专有能力通过显式 capability 暴露，缺失时明确拒绝。
+框架集成要保护领域层的稳定语义。领域层只认识任务、事件、工具意图、审批与 Artifact；adapter 处理框架特有的 message、stream、checkpoint 与异常。专有能力通过显式 capability 暴露，缺失时拒绝并说明原因。
 
 ```text
 Domain Agent / Workflow
@@ -44,7 +44,7 @@ interface FrameworkAdapter {
 | tool schema/call | 是 | registry、身份、策略、审批、幂等 |
 | trace | 开发体验 | OTel、脱敏、审计、SLO、成本账本 |
 | guardrail | 辅助 | fail-open/closed 策略与不可绕过门禁 |
-| model retry | 常内置 | 全链路 retry budget、熔断、降级 |
+| model retry | 常内置 | 共享 retry budget、熔断、降级 |
 
 例如 OpenAI Agents SDK 的 input guardrail 若并行执行可减少延迟，但模型可能已经花 token 或开始工具调用；高风险场景应在进入 SDK 前做同步策略门禁。LangGraph interrupt 能暂停图，但“谁有权批准、批准什么参数、多久过期”仍属于内部审批服务。
 
@@ -88,7 +88,7 @@ async function* guardedRun(adapter: FrameworkAdapter, cmd: StartRun, signal: Abo
 
 - **万能 facade**：把所有特性压成 `chat()`，丢掉恢复、审批与取消语义。
 - **漏网工具**：Agent-as-tool、handoff 或远程 MCP 绕过统一 Tool Gateway。所有执行边统一截获。
-- **双重重试**：SDK、HTTP client、队列同时重试，形成指数风暴。全链路共享 retry budget。
+- **双重重试**：SDK、HTTP client、队列同时重试，形成指数风暴。各层共享 retry budget。
 - **无法取消**：只停 UI stream，后台仍执行昂贵或破坏性操作。AbortSignal 必须贯穿。
 - **原始 trace 泛滥**：prompt/tool result 进入日志造成 PII 与 secret 泄露。默认元数据化、按字段白名单。
 

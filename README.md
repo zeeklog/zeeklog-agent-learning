@@ -1,6 +1,6 @@
 # Zeeklog Agent Learning
 
-这份知识库从 LLM 和分布式系统基础开始，逐步进入 Agent Loop、工具、检索、记忆、协议、多 Agent、桌面端和平台治理。每章都尽量落到状态、权限、失败处理或可验证的运行结果。
+从 LLM 和分布式系统基础开始，资料依次讨论 Agent Loop、工具、检索、记忆、协议、多 Agent、桌面端和平台治理。每个主题都落到状态、权限、失败处理或可验证的运行结果。
 
 本仓库是从极客日志文档中抽取的独立知识库，只保留 AI 学习内容。它把 [datawhalechina/hello-agents](https://github.com/datawhalechina/hello-agents) 与 [datawhalechina/Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) 接入同一条学习路线，提供章节映射、练习建议和工程验收标准。
 
@@ -28,7 +28,7 @@
 4. [执行契约、规划与验证](docs/03-runtime/execution-contract-verification.md)，再实现一个最小 Agent Loop。
 5. [参考项目](docs/07-practice/reference-project.md)，把练习落实为代码、测试或故障证据。
 
-已经会调用模型 API 的读者，可以直接从下方的 [Agent-Learning-Hub Stage 2](#agent-learning-hub) 或 [Hello-Agents 第二部分](#hello-agents)开始，然后回到 Runtime 和平台章节补生产语义。
+已经会调用模型 API，可以直接从下方的 [Agent-Learning-Hub Stage 2](#agent-learning-hub) 或 [Hello-Agents 第二部分](#hello-agents)开始，再回到 Runtime 和平台章节补上生产语义。
 
 ## 本地章节地图
 
@@ -48,7 +48,7 @@
 
 [datawhalechina/hello-agents](https://github.com/datawhalechina/hello-agents) 是一套从零开始构建智能体的中文教程，按“基础 → 经典范式 → 框架与自研 → 高级主题 → 综合案例”组织。下表将它的 16 章映射到本仓库章节；上游正文和示例以原仓库为准。
 
-| Hello-Agents 内容 | 在本仓库的对应阅读 | 学习产物 |
+| Hello-Agents 内容 | 对应阅读 | 学习产物 |
 | --- | --- | --- |
 | 前言、第一章至第三章：智能体概念、发展史、LLM 基础 | [LLM 系统原理](docs/01-foundations/llm-systems.md)、[架构能力地图](docs/00-roadmap/capability-map.md) | 画出 chatbot、workflow、agent、multi-agent 的边界 |
 | 第四章：ReAct、Plan-and-Solve、Reflection | [执行契约、规划与验证](docs/03-runtime/execution-contract-verification.md)、[Agent Loop](docs/03-runtime/agent-loop.md) | 一个有步数、超时、终止条件和工具调用的最小 Loop |
@@ -63,7 +63,7 @@
 | 第十三章至第十五章：旅行助手、深度研究、赛博小镇 | [端到端参考架构](docs/07-practice/reference-architecture.md)、[多 Agent 编排](docs/03-runtime/multi-agent-orchestration.md) | 先写任务边界和证据链，再决定是否拆分 Agent |
 | 第十六章：毕业设计 | [参考项目](docs/07-practice/reference-project.md)、[生产检查清单](docs/07-practice/production-checklists.md) | 一个可运行、可观测、可回滚的完整项目 |
 
-读法：先看上游章节中的例子，再回到本地章节补状态、权限、失败处理和验收。示例代码按上游仓库的锁定版本运行，不把示例接口当成长期公共契约。
+读法：先看上游章节的例子，再回到本地章节检查状态、权限、失败处理和验收。示例代码按上游仓库的锁定版本运行；示例接口不等于长期公共契约。
 
 <a id="agent-learning-hub"></a>
 
@@ -85,7 +85,7 @@
 
 ### Project Ladder 对照
 
-Project Ladder 把阅读拆成一组小项目。每一级都留下运行说明、示例输入输出和失败记录。
+Project Ladder 将学习安排成一组小项目。每一级都留下运行说明、示例输入输出和失败记录。
 
 | Level | 项目 | 本地练习建议 |
 | --- | --- | --- |
@@ -103,14 +103,14 @@ Project Ladder 把阅读拆成一组小项目。每一级都留下运行说明�
 
 ## 学习方法
 
-每个主题至少产出一种可检查的结果：架构图、可运行代码、Contract Test、故障注入、Trace、Eval、ADR 或运行手册。练习可以沿着这条链展开：
+每个主题都应留下可检查的结果：架构图、可运行代码、Contract Test、故障注入、Trace、Eval、ADR 或运行手册。练习沿着这条链展开：
 
 ```text
 请求接入 → TaskSpec/Plan → 权限与隔离 → Provider 流式输出
 → Tool 审批与执行 → Event Store → 验证与证据交付 → 恢复与对账
 ```
 
-先判断单 Agent、普通 Workflow 或脚本是否已经足够。需要拆分时，再为每个子 Agent 定义输入输出、授权范围、预算和停止条件。
+先问单 Agent、普通 Workflow 或脚本是否已经足够；确实需要拆分时，再为每个子 Agent 定义输入输出、授权范围、预算和停止条件。
 
 ## 仓库结构
 
@@ -134,13 +134,13 @@ labs/runtime-kernel               最小 Runtime Kernel 的学习入口
 
 GitHub 可以直接渲染所有 Markdown 文件，不需要安装依赖或启动服务。建议先读 `README.md` 和 `guide.md`，再按章节完成练习。`_sidebar.md` 仅用于需要 Docsify 导航的阅读环境；它不是网站运行时或业务代码。
 
-每次提交学习成果时，尽量同时记录：适用的模型或 SDK 版本、实验输入、失败情况、测试结果和外部资料核验日期。模型、协议、价格和厂商 API 都可能变化，不能把“当前可用”写成永久承诺。
+记录学习成果时，注明适用的模型或 SDK 版本、实验输入、失败情况、测试结果和外部资料核验日期。不要把易变的模型、协议、价格或厂商 API 写成永久承诺。
 
 ## 来源与许可
 
 - 本仓库的架构笔记、章节映射、练习和验收内容由 Zeeklog 整理，具体版权与许可边界见 [NOTICE.md](NOTICE.md) 和 [LICENSE](LICENSE)。
 - [Hello-Agents](https://github.com/datawhalechina/hello-agents) 与 [Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub) 是独立的上游项目；本仓库只提供公开链接、路线映射和学习索引，没有复制其正文、图片或代码。
-- 上游参考版本和各自许可证已记录在 [NOTICE.md](NOTICE.md)。上游项目会继续更新，阅读时应以对应仓库当前的许可证、版本和文档为准。
+- 路线参考的上游版本和各自许可证已记录在 [NOTICE.md](NOTICE.md)；原始内容和最新许可信息以对应仓库为准。
 
 ## 参与贡献
 

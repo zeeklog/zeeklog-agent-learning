@@ -1,6 +1,6 @@
 # Context Engineering：预算、选择、压缩与可信边界
 
-Context 是一条带预算、来源、优先级和测试数据的数据管道。本章实现一个基础 Context Packer，并用显式约束检查压缩是否丢失信息。
+Context 是一条带预算、来源、优先级和测试数据的数据管道。下面实现一个基础 Context Packer，再用显式约束检查压缩是否丢失信息。
 
 ## 1. Context 不等于 Memory，也不等于 Prompt
 
@@ -10,7 +10,7 @@ Context 是一条带预算、来源、优先级和测试数据的数据管道。
 
 Context Builder 类似数据库查询优化器：从会话事件、工作区、工具结果、组织策略和 Memory 中选择候选项，在窗口、成本、延迟和可信度约束下生成确定顺序的消息。它必须能回答“这段内容为何被放入/排除”。
 
-## 2. 先做 Token Budget 会计
+## 2. Token Budget 会计
 
 模型标称 context window 不是可全部用于历史的空间。应先预留输出、工具 schema、系统指令和安全余量：
 
@@ -23,13 +23,13 @@ history_budget = context_limit
                - safety_margin
 ```
 
-`tool_schemas` 常被忽略：几十个 MCP Tool 的描述和 JSON Schema 可能占用大量 token。解决方案不是只缩短描述，而是分层发现——先给工具索引或命名空间，只向当前任务暴露候选工具。
+`tool_schemas` 常被忽略：几十个 MCP Tool 的描述和 JSON Schema 可能占用大量 token。只缩短描述不够，应分层发现：先给工具索引或命名空间，再向当前任务暴露候选工具。
 
 不要在生产中用 `text.length / 4` 作为精确计数。应针对最终模型与编码器计数，并包含角色/消息包装开销；近似计数只可用于候选预筛，最终装箱需精确复算。供应商更换时，Tokenizer 也是 adapter 的一部分。
 
 ## 3. Context Item 的统一元数据
 
-把所有候选内容规范化，而不是直接混成字符串：
+先规范化所有候选内容，再组装消息：
 
 ```ts
 type Trust = "policy" | "user" | "workspace" | "external" | "model_generated";
@@ -207,7 +207,7 @@ Chunk 需保存 `documentVersion/start/end/contentHash`。回答引用的是具�
 
 在桌面端，Context Builder 可对文件索引做增量更新；监听文件变化时以 content hash 去抖。不要在 renderer 拼上下文，因为它缺乏组织策略和文件权限的最终裁决权。
 
-最后还要验证消息角色与顺序：同一工具结果必须紧随或明确引用对应 call，不能留下孤立结果；同一来源的重复片段应去重；当前用户请求不得被旧摘要遮蔽。构建结果同时保存 provider-neutral manifest 与 adapter 后的实际请求 hash，前者支持跨模型比较，后者支持定位供应商格式转换问题。
+还要验证消息角色与顺序：同一工具结果必须紧随或明确引用对应 call，不能留下孤立结果；同一来源的重复片段应去重；当前用户请求不得被旧摘要遮蔽。构建结果同时保存 provider-neutral manifest 与 adapter 后的实际请求 hash，前者用于跨模型比较，后者用于定位供应商格式转换问题。
 
 ## 10. 失败模式
 

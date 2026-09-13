@@ -206,7 +206,7 @@ Snapshot 至少包含 `sessionId、atSeq、schemaVersion、turns/materializedSta
 
 练习：给“读取文件 → 请求写入审批 → 应用补丁”生成完整事件 trace，并写 reducer。验收：随机重复、乱序、丢一条事件时 reducer 能去重/报 gap/拒绝非法转换；并发 terminal 只有一个提交成功；断线后可从 seq 恢复；敏感输出只存 blob ref；旧 decoder 面对新增事件不会获得额外权限。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [JSON Schema Specification](https://json-schema.org/specification)
 - [OpenTelemetry Trace semantic concepts](https://opentelemetry.io/docs/concepts/signals/traces/)

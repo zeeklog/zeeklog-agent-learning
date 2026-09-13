@@ -1,8 +1,8 @@
-# Agent Runtime 30/60/90 天架构落地
+# Agent Runtime 30/60/90 天实施路线
 
-## 总体策略：先建立事实，再划定边界
+## 总体策略：先收集事实，再划定边界
 
-架构改造最容易走偏的两个动作，是一开始重写 Runtime，或在没有运行数据时选定“统一框架”。前 90 天先收集系统事实、团队约束和业务成功标准，再用一条纵向链路验证方向。
+架构改造常见的偏差，是一开始重写 Runtime，或在没有运行数据时就选定“统一框架”。前 90 天先收集系统事实、团队约束和业务成功标准，再用一条纵向链路验证方向。
 
 ## 0～30 天：形成共同事实模型
 
@@ -10,7 +10,7 @@
 
 - 选 3 个代表场景：高频低风险、高价值需审批、长时可恢复任务。
 - 跟随一次真实用户任务，记录从意图到结果的所有等待、人工判断和失败。
-- 定义成功不是“模型有回复”，而是任务完成率、人工接管率、总耗时、单位成本和安全事件。
+- 定义成功指标：任务完成率、人工接管率、总耗时、单位成本和安全事件；模型有回复不算完成。
 
 ### 系统考古
 
@@ -31,7 +31,7 @@
 2. Top 10 失败模式及证据，不只凭印象。
 3. Runtime 事件词汇表与最小 Task/Attempt/Step/Tool 状态定义，标出 `BLOCKED`、`CANCELING`、`outcome_unknown`。
 4. 一页 North Star：未来架构原则、明确不做什么、3 个量化指标。
-5. 使用 [Agent Runtime 架构覆盖矩阵](../../docs/08-appendix/architecture-source-gap-analysis.md)完成现状覆盖、缺口与风险对照。
+5. 使用 [Agent Runtime 架构覆盖矩阵](../08-appendix/architecture-source-gap-analysis.md)完成现状覆盖、缺口与风险对照。
 
 ## 31～60 天：建立稳定边界并交付纵切
 
@@ -68,11 +68,11 @@ sequenceDiagram
 - 先建立 Provider Adapter 与统一事件协议，不先重构所有业务。
 - 给 Tool 加 manifest、risk、timeout、idempotency 和 audit。
 - 给入口增加 canonical request digest、防重冲突和预算预留；给 Worker 增加 lease + fencing。
-- 把自然语言目标编译为 TaskSpec/AcceptanceCriteria，使用独立 Verifier 和 Claim-Evidence Map 收口。
+- 把自然语言目标编译为 TaskSpec/AcceptanceCriteria，使用独立 Verifier 和 Claim-Evidence Map 完成验收与交付。
 - 用 Event Store 保存最小恢复状态；给取消链路接入 `AbortSignal`。
 - 固化环境指纹；等待审批时 checkpoint/park，撤销不必要 Secret 并释放 Worker。
 - 打通 Trace ID：Desktop → SDK → Runtime → Model/Tool。
-- 建 30～50 条 Eval 样本作为改造护栏。
+- 建 30～50 条 Eval 样本作为改造基线。
 
 ### 治理动作
 
@@ -89,12 +89,12 @@ sequenceDiagram
 
 ## 61～90 天：平台化与路线图
 
-### 从单点方案提炼平台能力
+### 从单点方案抽出平台能力
 
-- 将验证后的契约沉淀成 `runtime-core` 和 `unified-sdk`，不把试验性策略写死。
+- 将验证后的契约固化为 `runtime-core` 和 `unified-sdk`，不把试验性策略写死。
 - 把 model/tool/policy 配置移到控制面，并提供版本与回滚。
 - 将 Tool/Skill/Agent 作为能力供应链治理：不可变 Release、digest、provenance、SBOM、签名、租户 Binding、撤销与 canary。
-- 建立 Tenant Context，从身份到日志、配额、存储全链路携带。
+- 建立 Tenant Context，让身份信息贯穿日志、配额和存储。
 - 对多 Agent 仅开放受限委派：权限交集、预算 escrow、递归上限、独立 worktree、单一 Merger 和 join contract。
 - 设计 Desktop/Web/Extension/IDE 的 Capability Matrix，决定哪些能力在本地或远端执行。
 
@@ -112,7 +112,7 @@ sequenceDiagram
 3. SLO 与 Error Budget、成本预算和容量估算。
 4. Ownership/RACI：谁拥有协议、Runtime、工具目录、策略、桌面发布和事故响应。
 
-## 可直接使用的访谈问题
+## 访谈问题
 
 ### 问产品
 
@@ -144,4 +144,4 @@ sequenceDiagram
 - 一开始建设庞大控制面，但没有一条可靠数据面链路。
 - 把 Desktop 当薄壳，忽略本地进程、文件、凭据与升级带来的高权限风险。
 
-下一章：[能力测评与验收 →](../../docs/00-roadmap/assessment.md)
+下一章：[能力测评与验收 →](assessment.md)

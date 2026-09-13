@@ -2,9 +2,9 @@
 
 > 安全目标：假设 Renderer 已被 XSS 控制、Provider 输出包含恶意指令、仓库中存在提示注入文件，攻击者仍不能越权读取密钥、访问未授权目录或静默执行高风险工具。
 
-## 1. 建模：资产、主体、边界
+## 1. 资产、主体与边界
 
-先做数据流威胁模型，而不是堆安全开关。
+从数据流威胁模型开始；安全开关只能作为后续控制。
 
 | 资产 | 典型威胁 | 主要控制 |
 |---|---|---|
@@ -76,7 +76,7 @@ Sidecar 权限还需把 `shell:allow-spawn` 的 `name`、`sidecar: true` 和参�
 
 ## 4. 密钥生命周期
 
-长期秘密只进 Keychain（macOS）或 Credential Manager/DPAPI（Windows）。Electron `safeStorage` 可用于加密小块数据，但应先检查 `isEncryptionAvailable()`；Linux 行为另有差异。本章聚焦 Windows/macOS，仍要避免把它当成跨平台 HSM。Tauri 可通过审核过的 stronghold/keyring 方案或原生实现，关键是建立 `SecretStore` 端口。
+长期秘密只进 Keychain（macOS）或 Credential Manager/DPAPI（Windows）。Electron `safeStorage` 可用于加密小块数据，但应先检查 `isEncryptionAvailable()`；Linux 行为另有差异。这里聚焦 Windows/macOS，仍要避免把它当成跨平台 HSM。Tauri 可通过审核过的 stronghold/keyring 方案或原生实现，关键是建立 `SecretStore` 端口。
 
 ```ts
 interface SecretStore {
@@ -148,7 +148,7 @@ type Approval = {
 
 练习：给桌面客户端写威胁模型并实现 workspace grant。验收：XSS 测试无法得到 Node/Tauri 原始 API；`../`、symlink、junction 越界被拒；伪造审批摘要失败；进程列表、日志、crash dump 不出现 API key；远程页面请求摄像头与任意 navigation 被拒；安全 fuses/capabilities 在 CI 自动校验。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Electron Security Checklist](https://www.electronjs.org/docs/latest/tutorial/security)
 - [Electron Context Isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)

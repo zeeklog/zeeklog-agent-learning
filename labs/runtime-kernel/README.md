@@ -1,6 +1,6 @@
 # Runtime Kernel 可运行实验
 
-这个实验实现 Agent Runtime 的最小纵向链路，覆盖模型流式输出、幂等 Tool、追加式 Event Store、乐观并发和取消。它用于验证执行语义，不作为生产框架直接复用：
+这个实验实现 Agent Runtime 的最小纵向链路，覆盖模型流式输出、幂等 Tool、追加式 Event Store、乐观并发和取消。它用于验证执行语义，不应直接当作生产框架：
 
 ```text
 RunCreated → Model stream → ToolRequested → 幂等 Tool → Model final → RunCompleted

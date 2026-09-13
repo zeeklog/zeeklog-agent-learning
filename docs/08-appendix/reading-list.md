@@ -1,6 +1,6 @@
 # 一手资料清单：按问题阅读
 
-官方文档说明产品用法，规范说明实现要求，论文解释设计原因。模型、SDK、协议和价格会变化，阅读时记录实际版本或核验日期。
+官方文档说明产品用法，规范说明实现要求，论文解释设计原因。涉及版本的条目会注明版本或核验日期。
 
 ## 1. 三遍读法
 
@@ -57,8 +57,8 @@ open_questions:
 
 ### 2.1 Datawhale 两套路线
 
-- [Hello-Agents](https://github.com/datawhalechina/hello-agents)：按“基础 → 经典范式 → 框架与自研 → 记忆/上下文/协议/评测 → 综合案例”学习。对应本目录的章节映射见 [README](../../README.md#hello-agents)。
-- [Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub)：按 Stage 0～8 和 Project Ladder 学习，重点补 Agent Harness、Skills、浏览器 Agent、评测安全与发布。对应本目录的映射见 [README](../../README.md#agent-learning-hub)。
+- [Hello-Agents](https://github.com/datawhalechina/hello-agents)：按“基础 → 经典范式 → 框架与自研 → 记忆/上下文/协议/评测 → 综合案例”学习。对应这里的章节映射见 [README](../../README.md#hello-agents)。
+- [Agent-Learning-Hub](https://github.com/datawhalechina/Agent-Learning-Hub)：按 Stage 0～8 和 Project Ladder 学习，重点覆盖 Agent Harness、Skills、浏览器 Agent、评测安全与发布。对应这里的映射见 [README](../../README.md#agent-learning-hub)。
 
 两套路线都要求完成可运行项目。本地练习优先复用 [参考项目](../07-practice/reference-project.md)，把外部示例转换成自己的事件、权限和验证合同。
 

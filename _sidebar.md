@@ -4,7 +4,7 @@
 - **00 · Agent Runtime 进阶路线**
   - [Agent Runtime 架构能力地图](docs/00-roadmap/capability-map.md)
   - [12 周学习计划](docs/00-roadmap/12-week-plan.md)
-  - [30/60/90 天架构落地](docs/00-roadmap/first-90-days.md)
+  - [30/60/90 天实施路线](docs/00-roadmap/first-90-days.md)
   - [Agent Runtime 架构自测与验收](docs/00-roadmap/assessment.md)
 
 - **01 · 必备底层知识**
@@ -53,7 +53,7 @@
   - [任务控制平面](docs/06-platform/task-control-plane.md)
   - [控制面与数据面](docs/06-platform/control-data-plane.md)
   - [模型网关](docs/06-platform/model-gateway.md)
-  - [企业级 AI Gateway 技术架构方案](docs/06-platform/enterprise-ai-gateway.md)
+  - [企业级 AI Gateway：路由、账号池与故障处理](docs/06-platform/enterprise-ai-gateway.md)
   - [执行环境生命周期](docs/06-platform/execution-environment-lifecycle.md)
   - [Tool / Skill / Agent 能力供应链](docs/06-platform/capability-supply-chain.md)
   - [多租户与治理](docs/06-platform/multitenancy-governance.md)

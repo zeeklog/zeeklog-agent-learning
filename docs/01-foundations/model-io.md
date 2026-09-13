@@ -1,10 +1,10 @@
 # 模型接口、流式与结构化输出
 
-## 1. 先设计领域协议，再接 Provider SDK
+## 1. 先定领域协议，再接 Provider SDK
 
 模型 API 的消息字段、工具参数、流式事件、reasoning、缓存、文件和会话能力都会变化。不要把所有 Provider 字段拼成一个公共接口；这样业务会依赖供应商细节，升级也会变得困难。
 
-更稳的三层结构：
+可以分成三层：
 
 ```mermaid
 flowchart LR
@@ -267,4 +267,4 @@ export function modelProviderContract(create: () => Promise<ModelProvider>) {
 - [JSON Schema 2020-12](https://json-schema.org/draft/2020-12)
 - [WHATWG Streams Standard](https://streams.spec.whatwg.org/)
 
-下一章：[分布式系统语义 →](../../docs/01-foundations/distributed-systems.md)
+下一章：[分布式系统语义 →](distributed-systems.md)

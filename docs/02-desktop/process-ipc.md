@@ -2,7 +2,7 @@
 
 > IPC 是桌面应用的安全 API。每条消息都要可验证、可取消、可背压、可审计；版本不一致时要明确失败。
 
-## 1. 先分命令、查询与事件
+## 1. 命令、查询与事件先分开
 
 - **Command**：改变状态，如 `agent.start`、`tool.approve`；必须有 `requestId`、调用者、截止时间和幂等语义。
 - **Query**：读取快照，如 `session.get`；返回有限大小且可分页。
@@ -32,7 +32,7 @@ sequenceDiagram
 
 ## 2. 协议先于实现
 
-下面是可落地的 TypeScript 合约。Zod 只示范一种运行时校验方式，生产中也可由 JSON Schema/Protobuf 生成类型。
+下面是一份可直接实现的 TypeScript 合约。Zod 只示范一种运行时校验方式，生产中也可由 JSON Schema/Protobuf 生成类型。
 
 ```ts
 import { z } from "zod";
@@ -182,7 +182,7 @@ IPC 收到快不代表 Runtime 消费得过来。Main/Runtime 之间设置有界
 
 练习：实现一个可流式输出、取消和断线重放的 `agent.start`。验收：伪造 sender 被拒；1 MB payload 被拒；10 万条 delta 不使队列无界增长；取消后 1 秒内出现终态；杀掉 Runtime 后按 `lastSeenRunSeq` 恢复；新客户端连接旧 Runtime 时能明确降级而非崩溃。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Electron IPC Tutorial](https://www.electronjs.org/docs/latest/tutorial/ipc)
 - [Electron Context Isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)

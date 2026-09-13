@@ -183,7 +183,7 @@ Tool 名称、schema dialect、并行调用能力通过 adapter 编译。若 Pro
 
 练习：实现 `FakeProviderPort`、Codex/Claude 的最小 smoke adapter 和基于能力的 router。验收：Provider 包之外无法 import 官方 SDK；相同 fixture 产出相同公共事件不变量；缺关键 sandbox 能力时拒绝而非 prompt 降级；认证失败不 fallback；限流按 deadline 退避；升级 SDK 后 unknown union 分支令 CI 失败。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [OpenAI Codex TypeScript source](https://github.com/openai/codex/tree/main/sdk/typescript)

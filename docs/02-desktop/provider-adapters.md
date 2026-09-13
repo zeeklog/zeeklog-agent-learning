@@ -2,9 +2,9 @@
 
 > Provider SDK 属于易变的基础设施细节。UI 和 Runtime 只依赖本地的 Session、Turn、Event、Approval 合约；官方 SDK 只出现在 adapter 包内。
 
-## 1. 先澄清产品与名称
+## 1. 先澄清名称
 
-截至 2026-08，容易混淆的四个表面是：
+截至 2026-08，以下四个名称经常被混用：
 
 - OpenAI **Codex SDK**：TypeScript 包 `@openai/codex-sdk`，用于在 Node 服务端控制本地 Codex thread；官方公开最小用法是 `new Codex()`、`startThread()`、`resumeThread(id)`、`thread.run()`。官方也提供稳定 Python 包 `openai-codex`，通过本地 app-server JSON-RPC 工作。
 - Anthropic **Claude Agent SDK**：原“Claude Code SDK”已更名，TypeScript 包 `@anthropic-ai/claude-agent-sdk`；复用 Claude Code 的 agent loop、工具、上下文、hooks、permissions、sessions、MCP 等。
@@ -138,7 +138,7 @@ Codex TypeScript thread ID 在 thread 真正启动后才可用，持久化时要
 
 `settingSources: []` 代表企业 adapter 不自动加载用户或项目里的 Claude 配置，是建立可重复执行环境的常用基线；若产品允许 `.claude/` 配置、skills 或 plugins，必须把来源作为显式 capability，扫描后展示给用户，并受租户策略限制。Codex 的本地配置、AGENTS 指令同理：配置发现不是无害便利，它会改变工具、模型和网络行为。
 
-### 原始消息到公共事件的落地算法
+### 原始消息到公共事件的映射
 
 Adapter 为每次 run 建 `MappingContext`：公共 turnId、Provider turn/session ref、当前 message/tool map、last seq、terminal flag。收到文本增量只追加到对应 stream buffer 并发 delta；收到 message complete 时核对聚合文本/hash；工具开始先验证 schema 和 policy，再发布 requested；Provider result 到达后用 compare-and-set 写唯一 terminal。若 iterator 抛错但此前已见 Provider terminal，以 terminal 为准并把迟到异常记诊断；若无 terminal，则发布 `turn.failed(PROVIDER_STREAM_LOST)`。这可避免常见的“双终态”与“空成功”。
 
@@ -163,7 +163,7 @@ Adapter 的临时目录、配置目录和 session transcript 目录应按租户/
 
 练习：实现两个 fake provider 和一个真实 Provider smoke adapter。验收：同一 prompt 的事件都通过公共 schema；取消能到达底层；无 resume 能力时 UI 根据 capability 隐藏入口；未知事件使测试失败；日志无 prompt/key；锁定 SDK 升级后 golden trace 差异必须人工确认。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [OpenAI Codex SDK](https://developers.openai.com/codex/sdk)
 - [OpenAI Codex TypeScript SDK source and samples](https://github.com/openai/codex/tree/main/sdk/typescript)

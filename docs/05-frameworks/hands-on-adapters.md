@@ -1,10 +1,10 @@
 # Framework Adapter 实战：统一暂停、审批与事件契约
 
-OpenAI Agents SDK（TypeScript）和 LangGraph（Python）可以接入统一的 Runtime 边界，再由契约测试验证暂停、跨进程恢复、工具拦截、取消和事件顺序。文中 API 已于 **2026-08-30** 对照官方文档；生产代码仍需锁定依赖与 Agent Definition 版本。
+OpenAI Agents SDK（TypeScript）和 LangGraph（Python）可以接入同一 Runtime 边界，再由契约测试验证暂停、跨进程恢复、工具拦截、取消和事件顺序。示例针对 **2026-08-30** 对照过的 API；生产代码仍需锁定依赖与 Agent Definition 版本。
 
 ## 1. 先确定所有框架都不能越过的边界
 
-框架负责“如何推理/编排”，平台负责“谁可以做什么、执行是否重复、事实如何留痕”。因此 adapter 不是把 `run()` 改名，而是一个防腐层：框架的 checkpoint 是恢复游标，不是企业事实库；框架的 tool callback 是提案入口，不是授权；框架的 stream event 是上游协议，不是产品 API。
+框架负责“如何推理/编排”，平台负责“谁可以做什么、执行是否重复、事实如何留痕”。Adapter 需要隔开两者：框架 checkpoint 只作为恢复游标，tool callback 只作为提案入口，stream event 也不直接成为产品 API。
 
 ```mermaid
 flowchart LR
@@ -323,7 +323,7 @@ class OpenAIAgentsPort implements AgentPort {
 
 这里的 `AgentPort` 是 **Runtime worker 内部端口**：Supervisor 必须持续 drain 生成器并把已提交 Journal 事件分发给订阅者。UI/SSE 断线只能取消订阅，不能通过“停止迭代”终止任务；业务取消必须发送 command 并走 `AbortSignal → 下游确认 → terminal event`。Journal 的 pause/finish 还要校验 fencing token，拒绝租约过期后旧 worker 的迟到提交。
 
-上例需要按你锁定版本补齐两个窄 helper：`normalizeToolCall/normalizeToolOutput` 只访问该版本导出的 item union，并对未知 variant fail closed。当前公开 `RunState.getInterruptions()`、`state.approve/reject`、`RunState.fromString` 就是恢复 seam，**不要读取 `_` 前缀内部字段**。helper 与 SDK 类型一起编译、用官方 `ScriptedModel` 做确定性测试，避免靠真实模型碰运气。
+上例需要按锁定版本补写两个窄 helper：`normalizeToolCall/normalizeToolOutput` 只访问该版本导出的 item union，并对未知 variant fail closed。当前公开 `RunState.getInterruptions()`、`state.approve/reject`、`RunState.fromString` 就是恢复 seam，**不要读取 `_` 前缀内部字段**。helper 与 SDK 类型一起编译、用官方 `ScriptedModel` 做确定性测试，避免靠真实模型碰运气。
 
 更重要的是恢复边界：序列化状态可能含应用 context；不得放 token/密钥。长时间 pending 的状态必须跟随原 SDK 与原 agent graph 版本恢复。官方甚至建议需要并行恢复旧任务时用 package alias 同时安装两版 SDK。若反序列化不能证明 output ownership，SDK 会 fail closed；平台应把旧任务转人工或从安全输入新开 run，不能强制篡改 state。
 
@@ -489,7 +489,7 @@ def drive(start: dict, resume: dict | None = None):
 
 resume 入口还必须做三项原子校验：checkpoint 可 claim、审批记录的 `approvalId/argsSha256/runId` 一致、definition/framework version 可恢复。之后才调用 `Command(resume=...)`。`journal.append()` 在数据库里为 `(run_id, event_key)` 建唯一键并原子分配下一个 run seq，所以恢复不会从 1 重新编号。生产 checkpointer 与平台 journal 若无法同库事务，就用稳定 checkpoint ID、transactional outbox 和 reconcile job 处理“graph cursor 已提交、平台 envelope 未写成”的 receipt-unknown；不能靠普通先后调用假装原子。
 
-## 5. 同一组 contract tests，而不是两套“看起来能跑”的 demo
+## 5. 同一组 contract tests
 
 测试模型输出不应依赖真实大模型的随机工具选择。为每个 adapter 注入 deterministic model/provider：固定先提出一个 `apply_patch`，批准后固定输出 `done`；真实 provider 另跑 smoke test。合同测试只观察 `AgentPort` 与 fake Tool Gateway，因此能抓住框架升级造成的语义破坏。
 
@@ -611,7 +611,7 @@ type AdapterCapabilities = {
 
 先阅读[框架集成方法](framework-integration.md)和[Build vs Buy](build-vs-buy.md)理解防腐层；状态事实与 receipt-unknown 见[SQLite 持久化](../03-runtime/persistence-sqlite.md)，工具授权见[工具系统](../03-runtime/tool-system.md)，统一事件见[合同与事件](../04-sdk/contracts-events.md)，桌面 patch/worktree 事务见[Coding Agent Host](../02-desktop/coding-agent-host.md)。
 
-## 官方资料（核对时间：2026-08-30）
+## 参考资料
 
 - OpenAI：[Agents SDK for TypeScript](https://openai.github.io/openai-agents-js/)、[Running agents](https://openai.github.io/openai-agents-js/guides/running-agents/)、[Streaming](https://openai.github.io/openai-agents-js/guides/streaming/)、[Human-in-the-loop / RunState versioning](https://openai.github.io/openai-agents-js/guides/human-in-the-loop/)、[Results](https://openai.github.io/openai-agents-js/guides/results/)、[Testing / ScriptedModel](https://openai.github.io/openai-agents-js/guides/testing/)
 - LangChain：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Persistence](https://docs.langchain.com/oss/python/langgraph/persistence)、[Event streaming v3](https://docs.langchain.com/oss/python/langgraph/event-streaming)

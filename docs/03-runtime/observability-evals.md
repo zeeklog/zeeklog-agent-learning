@@ -1,6 +1,6 @@
 # Observability 与 Evals：信号、指标与质量验证
 
-Event、Log、Metric、Trace 与 Eval 各自回答不同问题。本章定义 Agent Run 的 Span 和指标，再用可复现数据集评估 Prompt、模型、工具及 Runtime 变更。
+Event、Log、Metric、Trace 与 Eval 各自回答不同问题。下面定义 Agent Run 的 Span 和指标，再用可复现数据集评估 Prompt、模型、工具及 Runtime 变更。
 
 ## 1. 五类信号回答不同问题
 

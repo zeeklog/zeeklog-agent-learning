@@ -1,6 +1,6 @@
 # ADR 模板：让架构决策可验证、可撤销
 
-> ADR（Architecture Decision Record）记录的是“在当时约束下为什么这样选”，不是会议纪要或永久真理。一个好 ADR 能让后来者判断：条件是否变化、应该继续、迁移还是撤销。
+> ADR（Architecture Decision Record）记录“在当时约束下为什么这样选”。它应让后来者判断条件是否变化，以及决定继续、迁移还是撤销。
 
 ## 1. 何时必须写 ADR
 

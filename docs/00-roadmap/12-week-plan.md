@@ -1,12 +1,12 @@
 # 12 周学习计划：每周一个可检查的结果
 
-## 计划原则
+## 安排方式
 
 每周投入 12～16 小时，可按原理 25%、编码 45%、失败实验 20%、ADR/复盘 10% 分配。如果时间只有一半，减少阅读面，保留代码、测试和失败注入。
 
-练习项目使用 TypeScript：一个 `runtime-core` 包、一个 Electron 壳、两个 Provider Adapter、一个本地 SQLite Event Store、三种 Tool 和一套 Trace/Eval。详细规格见 [参考项目](../../docs/07-practice/reference-project.md)。
+练习项目使用 TypeScript，包含一个 `runtime-core` 包、一个 Electron 壳、两个 Provider Adapter、一个本地 SQLite Event Store、三种 Tool 和一套 Trace/Eval。详细规格见 [参考项目](../07-practice/reference-project.md)。
 
-## Phase 1：建立正确的执行模型（第 1～3 周）
+## Phase 1：建立执行模型（第 1～3 周）
 
 ### 第 1 周：模型 I/O 与统一事件
 
@@ -29,7 +29,7 @@ type RuntimeEvent =
 
 ### 第 2 周：Agent Loop 与状态机
 
-**学习**：先读[执行契约、规划与验证](../../docs/03-runtime/execution-contract-verification.md)，再学习 Observe/Decide/Act、TaskSpec、AcceptanceCriteria、Plan DAG、终止条件、step budget、循环检测、确定性边界、human-in-the-loop。
+**学习**：先读[执行契约、规划与验证](../03-runtime/execution-contract-verification.md)，再学习 Observe/Decide/Act、TaskSpec、AcceptanceCriteria、Plan DAG、终止条件、step budget、循环检测、确定性边界、human-in-the-loop。
 
 **实现**：Reducer 驱动状态机；每个 transition 产生事件，外部副作用由 effect runner 执行。
 
@@ -51,7 +51,7 @@ type RuntimeEvent =
 
 ### 第 4 周：Tool Runtime
 
-**学习**：JSON Schema、capability、policy、approval binding + reauthorize、idempotency、timeout、sandbox、audit、result redaction，以及[能力供应链](../../docs/06-platform/capability-supply-chain.md)的 digest/signature/SBOM/revocation。
+**学习**：JSON Schema、capability、policy、approval binding + reauthorize、idempotency、timeout、sandbox、audit、result redaction，以及[能力供应链](../06-platform/capability-supply-chain.md)的 digest/signature/SBOM/revocation。
 
 **实现**：只读文件、写文件、HTTP 三个工具；写操作必须审批；所有工具带风险等级和幂等键。
 
@@ -61,7 +61,7 @@ type RuntimeEvent =
 
 ### 第 5 周：Durable Workflow 与 Event Store
 
-**学习**：event sourcing、snapshot、at-least-once、retry/backoff、compensation、workflow versioning、lease 与 fencing 的区别。逐段实现 [SQLite 持久化内核](../../docs/03-runtime/persistence-sqlite.md) 中的 schema、CAS append、outbox/inbox、备份与恢复协议。
+**学习**：event sourcing、snapshot、at-least-once、retry/backoff、compensation、workflow versioning、lease 与 fencing 的区别。逐段实现 [SQLite 持久化内核](../03-runtime/persistence-sqlite.md) 中的 schema、CAS append、outbox/inbox、备份与恢复协议。
 
 **实现**：SQLite event store；每个 Run 从事件恢复；定时器和审批可跨进程重启。
 
@@ -83,7 +83,7 @@ type RuntimeEvent =
 
 ### 第 7 周：AI Desktop 信任边界
 
-**学习**：Electron Main/Renderer/preload、context isolation、sandbox、typed IPC、Sidecar、OS credential store，并完成 [Coding Agent 本地主机](../../docs/02-desktop/coding-agent-host.md) 的 PTY、worktree、patch transaction 与跨平台权限模型。
+**学习**：Electron Main/Renderer/preload、context isolation、sandbox、typed IPC、Sidecar、OS credential store，并完成 [Coding Agent 本地主机](../02-desktop/coding-agent-host.md) 的 PTY、worktree、patch transaction 与跨平台权限模型。
 
 **实现**：Renderer 只能访问窄接口；Runtime 运行于 utility process 或 sidecar；文件访问经过 workspace root 校验。
 
@@ -101,7 +101,7 @@ type RuntimeEvent =
 
 **产物**：差异矩阵、Adapter、兼容测试、降级策略。
 
-**加练**：按 [Framework Adapter 实战](../../docs/05-frameworks/hands-on-adapters.md) 用同一套 contract suite 接入 OpenAI Agents SDK 与 LangGraph，验证 checkpoint claim、审批绑定和跨进程恢复。
+**加练**：按 [Framework Adapter 实战](../05-frameworks/hands-on-adapters.md) 用同一套 contract suite 接入 OpenAI Agents SDK 与 LangGraph，验证 checkpoint claim、审批绑定和跨进程恢复。
 
 ### 第 9 周：Unified SDK 与多端
 
@@ -123,15 +123,15 @@ type RuntimeEvent =
 
 ### 第 11 周：控制面、多租户与安全
 
-**实现**：按[任务控制平面](../../docs/06-platform/task-control-plane.md)完成可信 RequestEnvelope、digest 防重、budget reserve、公平调度与 lease fencing；按[执行环境生命周期](../../docs/06-platform/execution-environment-lifecycle.md)完成环境指纹、Setup/Agent 分权和清理证明；加入 tenant-scoped policy/model/tool catalog、短期令牌、审计查询、租户级配额和 kill switch；按 [企业模型网关](../../docs/06-platform/model-gateway.md) 实作 region/feature/policy 硬过滤、路由决策快照、quota reservation 与安全 fallback。
+**实现**：按[任务控制平面](../06-platform/task-control-plane.md)完成可信 RequestEnvelope、digest 防重、budget reserve、公平调度与 lease fencing；按[执行环境生命周期](../06-platform/execution-environment-lifecycle.md)完成环境指纹、Setup/Agent 分权和清理证明；加入 tenant-scoped policy/model/tool catalog、短期令牌、审计查询、租户级配额和 kill switch；按 [企业模型网关](../06-platform/model-gateway.md) 实作 region/feature/policy 硬过滤、路由决策快照、quota reservation 与安全 fallback。
 
 **演练**：跨租户 ID 猜测、旧 Worker 恢复写入、审批后参数替换、恶意 MCP Server、Prompt Injection、密钥轮换、环境清理失败和策略回滚。
 
 ### 第 12 周：架构评审与发布
 
-**完成**：使用 [Agent Runtime 架构覆盖矩阵](../../docs/08-appendix/architecture-source-gap-analysis.md)做 20 分钟架构讲解；演示受限[多 Agent 编排](../../docs/03-runtime/multi-agent-orchestration.md)、10 分钟事故处置、5 个 ADR、运行手册、SLO、成本模型、未来两个季度演进路线。
+**完成**：使用 [Agent Runtime 架构覆盖矩阵](../08-appendix/architecture-source-gap-analysis.md)做 20 分钟架构讲解；演示受限[多 Agent 编排](../03-runtime/multi-agent-orchestration.md)、10 分钟事故处置、5 个 ADR、运行手册、SLO、成本模型、未来两个季度演进路线。
 
-请找同事扮演安全、SRE、产品和 SDK 使用者进行质询。如果系统只能在你讲解时成立、无法从代码与观测中自行证明，它还没有达到平台标准。
+安排安全、SRE、产品和 SDK 使用者分别质询方案。若系统只能在讲解时成立，代码和观测却无法自行证明结论，就还没有达到平台标准。
 
 ## 每周复盘模板
 
@@ -157,4 +157,4 @@ type RuntimeEvent =
 - SDK 在至少两个 transport、两个 UI 环境工作。
 - 一次变更必须经过 Contract Test、Replay、Eval 和 Canary 证据。
 
-下一章：[Agent Runtime 30/60/90 天架构落地 →](../../docs/00-roadmap/first-90-days.md)
+下一章：[Agent Runtime 30/60/90 天实施路线 →](first-90-days.md)

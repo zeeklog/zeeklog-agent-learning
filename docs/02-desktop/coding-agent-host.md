@@ -1,8 +1,8 @@
 # Coding Agent 本地主机：从工作区授权到可审计补丁
 
-Windows/macOS Coding Agent Host 要同时处理工作区授权、代码索引、进程树、补丁副作用和崩溃恢复。能启动 shell 还不够，验收要看安全链是否可审计、可复现。文中的厂商与 OS 行为于 **2026-08-30** 按官方资料核对；标注为“建议”的内容属于架构推导，不代表操作系统承诺。
+Windows/macOS Coding Agent Host 要同时处理工作区授权、代码索引、进程树、补丁副作用和崩溃恢复。验收重点是安全链能否审计和复现。文中的厂商与 OS 行为于 **2026-08-30** 按官方资料核对；标注为“建议”的内容属于架构推导，不代表操作系统承诺。
 
-## 1. 先建立工作区生命周期
+## 1. 工作区生命周期
 
 Coding Agent 的工作区不是一个字符串路径，而是一项有状态租约：
 
@@ -256,7 +256,7 @@ async function updateIndex(delta: FileDelta) {
 
 先复习[桌面总体架构](overview.md)、[进程与类型化 IPC](process-ipc.md)和[桌面安全](security.md)。事件与副作用语义见[工具系统](../03-runtime/tool-system.md)、[流式与恢复](../03-runtime/streaming-recovery.md)；工作区事件落盘见[SQLite Event Store](../03-runtime/persistence-sqlite.md)。
 
-## 官方资料（核对时间：2026-08-30）
+## 参考资料
 
 - [Git worktree](https://git-scm.com/docs/git-worktree)、[git apply](https://git-scm.com/docs/git-apply)
 - [Tree-sitter：增量解析](https://tree-sitter.github.io/tree-sitter/using-parsers/3-advanced-parsing.html)、[Language Server Protocol](https://microsoft.github.io/language-server-protocol/)

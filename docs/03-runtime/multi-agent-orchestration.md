@@ -1,6 +1,6 @@
 # Multi-Agent 编排：受限委派、隔离执行与确定性汇合
 
-Multi-Agent 编排要求委派可恢复、可审计，且不能扩大权限。本章定义 Supervisor–Worker 合同、预算托管、Context 与 Worktree 隔离、Join/Cancel 语义和冲突处理。
+Multi-Agent 编排要求委派可恢复、可审计，且不能扩大权限。下面定义 Supervisor–Worker 合同、预算托管、Context 与 Worktree 隔离、Join/Cancel 语义和冲突处理。
 
 ## 1. 先判断是否真的需要多 Agent
 
@@ -32,9 +32,9 @@ export function shouldDelegate(x: ParallelismEstimate): boolean {
 }
 ```
 
-这个函数不是让模型自行决定授权；它只是 Scheduler 的成本提示。安全策略、租户配额和任务风险仍有最终否决权。
+这个函数只给 Scheduler 提供成本提示，不能让模型自行决定授权。安全策略、租户配额和任务风险仍有最终否决权。
 
-## 2. Supervisor–Worker 不是权限继承树
+## 2. Supervisor–Worker 的权限边界
 
 Supervisor 负责保留用户目标、拆分工作、分配预算、观察事件、处理异常并汇总交付。Worker 只完成窄任务，返回结构化产物和证据。Verifier 与 Merger 最好是显式角色，避免实现者既改代码又给自己判定通过。
 
@@ -53,7 +53,7 @@ flowchart TB
   S --> D["Delivery Bundle"]
 ```
 
-关键不变量：
+不变量：
 
 1. 子 Agent 的有效权限不得大于父任务权限；
 2. 委派不是共享用户身份，而是签发短期、限定 audience 的工作负载身份；
@@ -111,9 +111,9 @@ type BudgetGrant = {
 };
 ```
 
-Envelope 应被 Runtime 规范化并计算摘要；子 Agent 接收的是签名后的 `delegationId + digest`，不是可自行改写的 JSON。`inputArtifacts.sha256` 防止任务开始后读取到另一版本。`outOfScope` 用于解释与审计，但真正隔离仍由 Capability、Sandbox 和 Worktree 实现。
+Runtime 应规范化 Envelope 并计算摘要；子 Agent 接收签名后的 `delegationId + digest`，不能自行改写 JSON。`inputArtifacts.sha256` 防止任务开始后读取到另一版本。`outOfScope` 用于解释与审计，真正的隔离由 Capability、Sandbox 和 Worktree 实现。
 
-### 3.1 Contract-Net：竞标不是让 Agent 自选权限
+### 3.1 Contract-Net：竞标不授予权限
 
 工作池异构时，可以采用简化 Contract-Net：Supervisor 发布窄任务；候选 Agent 根据能力、队列、地域和预估成本返回 Bid；Scheduler 硬过滤后选择；最后签发 Award。模型生成的“我能完成”只是一项软信号。
 
@@ -218,7 +218,7 @@ sum(active child grants) <= parent reserved budget
 
 ### 6.1 最小上下文下放
 
-子 Agent 只拿目标所需的 Context Slice：任务合同、相关文件/Artifact、必要架构约束和输出 schema。根 Agent 保留用户完整历史、最终决策与跨子任务状态。结果回传摘要、证据 URI、内容哈希和置信度，而不是把完整 trace 塞回根 Context。
+子 Agent 只拿目标所需的 Context Slice：任务合同、相关文件/Artifact、必要架构约束和输出 schema。根 Agent 保留用户完整历史、最终决策与跨子任务状态。结果回传摘要、证据 URI、内容哈希和置信度，不把完整 trace 塞回根 Context。
 
 不可信网页、Issue、日志和其他 Agent 输出继续带 provenance/trust label。另一个 Agent 的消息仍是**数据**，不会因为来自内部 Agent 就升级为指令。
 
@@ -268,7 +268,7 @@ stateDiagram-v2
   FAILED --> JOINED: join policy accepts failure
 ```
 
-推荐事件最小字段：
+事件至少包含以下字段：
 
 ```ts
 type AgentEvent = {
@@ -293,7 +293,7 @@ type AgentEvent = {
 
 事件流以 `(delegationId, sequence)` 唯一；状态更新使用 expected sequence 做乐观并发。大结果放 Artifact Store，事件只存引用与哈希。所有子 trace 用 `traceId` 和 parent span 关联，同时保留 `delegationId`，否则并发树在日志中无法重建。
 
-## 8. Join：完成集合不是数组拼接
+## 8. Join：如何汇合完成结果
 
 Join 策略必须在派发前固定：
 

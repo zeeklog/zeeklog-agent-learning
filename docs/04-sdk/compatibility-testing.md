@@ -163,7 +163,7 @@ Release gate 需产出机器可读 compatibility report：测试组合、版本/
 
 练习：为 fake Provider 和 in-memory transport 建首个 conformance harness，再加入一个真实 adapter。验收：至少 30 个公共行为用例；随机事件测试可复现 seed；杀进程不会重复 tool side effect；N-1 client 与 N Runtime 双向兼容测试；真实 SDK 报告包含包/CLI/hash；篡改更新、伪造 IPC、日志 secret scan 全部进入发布门禁。
 
-## 官方资料（核对时间：2026-08）
+## 参考资料
 
 - [Semantic Versioning 2.0.0](https://semver.org/)
 - [JSON Schema Specification](https://json-schema.org/specification)
