@@ -1,0 +1,21 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+# Optional renderers and local tooling
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.cache/
+output/
+playwright-report/
+*.log
