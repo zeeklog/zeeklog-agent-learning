@@ -208,7 +208,7 @@ superseded_by: null
 - 官方规范、benchmark、PR、实验、incident；标核验日期和版本。
 ````
 
-## 4. 完整示例：Event Log 为 Run 真相，Snapshot 加速
+## 4. 示例：Event Log 为 Run 真相，Snapshot 加速
 
 ---
 

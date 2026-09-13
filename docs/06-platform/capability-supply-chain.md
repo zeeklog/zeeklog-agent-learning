@@ -322,7 +322,7 @@ type ApprovalBinding = {
 
 审批不能扩大 Task 权限、不能把 A 仓库批准重放到 B 仓库、不能跨版本沿用。策略或资源状态变化后，旧审批可以变成无效；“用户点过允许”不是永久 allowlist。
 
-## 9. 执行票据：把决策送到真正的安全边界
+## 9. 执行票据：在执行端验证决策
 
 Tool Gateway/Sandbox 不应相信 Runtime 传来的 `approved: true`。它只接受短期签名 Execution Ticket：
 

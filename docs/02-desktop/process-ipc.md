@@ -146,7 +146,7 @@ UI 订阅单个 Run 时，重连发送 `(runId, lastSeenRunSeq)`，Runtime 从�
 
 ### Command ledger：解决“到底执行了没有”
 
-网络/进程 IPC 最大的工程难题不是超时，而是超时后的不确定性。Main 在转发有副作用的命令前，把 `(tenantId, clientRequestId, commandDigest)` 写入 ledger，状态为 `received`；Runtime 接受后记录 `accepted(turnId)`；终态再写 `completed/failed/cancelled`。同一 idempotency key 与相同 digest 重试时返回原记录，不再执行；key 相同但 digest 不同返回 `IDEMPOTENCY_CONFLICT`。ledger 的写入和业务事件提交要在同一事务边界或采用 outbox，否则仍会出现“工具已执行、记录没写”的双写裂缝。
+网络/进程 IPC 的难点在于处理超时后的不确定性。Main 在转发有副作用的命令前，把 `(tenantId, clientRequestId, commandDigest)` 写入 ledger，状态为 `received`；Runtime 接受后记录 `accepted(turnId)`；终态再写 `completed/failed/cancelled`。同一 idempotency key 与相同 digest 重试时返回原记录，不再执行；key 相同但 digest 不同返回 `IDEMPOTENCY_CONFLICT`。ledger 的写入和业务事件提交要在同一事务边界或采用 outbox，否则仍会出现“工具已执行、记录没写”的双写问题。
 
 查询接口 `command.status(requestId)` 必须在 client timeout 后仍可用。UI 因此能区分“确定失败”“仍在执行”“结果未知需人工恢复”，不能把一切 timeout 都变成红色失败并允许再次点击。只读查询可以有限自动重试；写文件、提交代码等命令只有具备 ledger 证据才能重试。
 

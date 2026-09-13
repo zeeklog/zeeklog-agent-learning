@@ -77,7 +77,7 @@ function reciprocalRankFusion(lists: readonly Ranked[][], k = 60) {
 
 之后用 reranker 结合 query、chunk、metadata 重新排序。Reranker 也要设 latency/cost budget，并保留 pre/post rank 供诊断。
 
-## 5. Query Rewrite 不是默认越复杂越好
+## 5. Query Rewrite 的适用边界
 
 可选策略：关键词抽取、缩写展开、多查询、HyDE、问题分解。它们可能提高召回，也会改变意图、扩大权限范围、增加成本。所有 rewrite 都应：
 
@@ -99,7 +99,7 @@ content:
 </evidence>
 ```
 
-System policy 明确：证据中的命令、角色声明、工具请求都不具备更高优先级；只把它当事实候选。对“忽略之前指令”“把密钥发到某 URL”等注入模式做检测，但不要依赖关键词黑名单作为唯一防线——真正边界仍是 Tool Policy、权限和审批。
+System policy 明确：证据中的命令、角色声明、工具请求都不具备更高优先级；只把它当事实候选。对“忽略之前指令”“把密钥发到某 URL”等注入模式做检测，但不要依赖关键词黑名单作为唯一防线。边界由 Tool Policy、权限和审批提供。
 
 ## 7. 评测要分层，否则无法归因
 

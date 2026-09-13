@@ -4,7 +4,7 @@
 
 ## 1. 资产、主体与边界
 
-从数据流威胁模型开始；安全开关只能作为后续控制。
+先画出数据流和信任边界，再决定具体安全控制。
 
 | 资产 | 典型威胁 | 主要控制 |
 |---|---|---|
@@ -105,7 +105,7 @@ async function resolveGranted(root: string, candidate: string) {
 }
 ```
 
-这只是起点：打开文件前后还可能发生 symlink/TOCTOU 竞态。高风险写操作应使用目录句柄相对访问、`O_NOFOLLOW`（平台允许时）、原子临时文件 + rename，并在 Tool Sandbox 中限制 OS 可见路径。Windows 还要标准化盘符大小写、UNC、junction、`\\?\` 长路径；macOS 要考虑 alias、大小写不敏感卷与 TCC 授权。
+打开文件前后仍可能发生 symlink/TOCTOU 竞态。高风险写操作应使用目录句柄相对访问、`O_NOFOLLOW`（平台允许时）、原子临时文件 + rename，并在 Tool Sandbox 中限制 OS 可见路径。Windows 还要标准化盘符大小写、UNC、junction、`\\?\` 长路径；macOS 要考虑 alias、大小写不敏感卷与 TCC 授权。
 
 Grant 应包含：规范化根、允许动作（read/write/execute）、排除 glob、租户、创建来源、到期时间。路径检查只解决“在哪里”，还需数据出站策略解决“能否发送”：Provider allowlist、代理、证书、租户区域与敏感文件规则。
 

@@ -4,7 +4,7 @@ Multi-Agent 编排要求委派可恢复、可审计，且不能扩大权限。�
 
 ## 1. 先判断是否真的需要多 Agent
 
-多 Agent 的收益来自**隔离、专门化和并行产出证据**，不是角色扮演。只有任务能拆成低耦合子问题，且节省的时间大于编排、重复上下文和合并成本时，才值得使用。
+多 Agent 适合处理能拆成低耦合子问题的任务，收益主要来自**隔离、专门化和并行产出证据**。只有节省的时间大于编排、重复上下文和合并成本时，才值得使用。
 
 | 候选任务 | 建议 | 原因 |
 | --- | --- | --- |
@@ -111,7 +111,7 @@ type BudgetGrant = {
 };
 ```
 
-Runtime 应规范化 Envelope 并计算摘要；子 Agent 接收签名后的 `delegationId + digest`，不能自行改写 JSON。`inputArtifacts.sha256` 防止任务开始后读取到另一版本。`outOfScope` 用于解释与审计，真正的隔离由 Capability、Sandbox 和 Worktree 实现。
+Runtime 应规范化 Envelope 并计算摘要；子 Agent 接收签名后的 `delegationId + digest`，不能自行改写 JSON。`inputArtifacts.sha256` 防止任务开始后读取到另一版本。`outOfScope` 用于解释与审计；隔离由 Capability、Sandbox 和 Worktree 实现。
 
 ### 3.1 Contract-Net：竞标不授予权限
 

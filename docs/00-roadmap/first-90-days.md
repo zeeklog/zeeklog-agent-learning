@@ -1,8 +1,8 @@
 # Agent Runtime 30/60/90 天实施路线
 
-## 总体策略：先收集事实，再划定边界
+## 前 90 天先做什么
 
-架构改造常见的偏差，是一开始重写 Runtime，或在没有运行数据时就选定“统一框架”。前 90 天先收集系统事实、团队约束和业务成功标准，再用一条纵向链路验证方向。
+架构改造容易一开始就重写 Runtime，或在没有运行数据时先选定“统一框架”。前 90 天先收集系统事实、团队约束和业务成功标准，再用一条纵向链路验证方案。
 
 ## 0～30 天：形成共同事实模型
 
@@ -23,7 +23,7 @@
 
 - 识别 Client、Runtime、SDK、Platform、Security、SRE 的 owner 和决策边界。
 - 收集已有 RFC/ADR、事故报告、SLO、发布和回滚流程。
-- 建立统一术语：Task、Thread、Turn、Run/Attempt、Step、Workflow、Tool Call、Evidence 的含义必须一致；明确 phase 与 outcome 分离。
+- 统一 Task、Thread、Turn、Run/Attempt、Step、Workflow、Tool Call、Evidence 的定义，并把 phase 与 outcome 分开。
 
 ### 30 天交付物
 

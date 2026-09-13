@@ -132,7 +132,7 @@ app.on("child-process-gone", (_e, details) => {
 
 发布控制面需要 kill switch，但它只能收窄能力：暂停新 turn、禁用某 Provider/插件/工具、停止某版本更新；不能远程扩大本地权限。策略文档带签名、版本、到期时间和 last-known-good，离线时按风险确定 fail closed/open。紧急回退演练要覆盖控制面不可达、设备时钟错误和签名密钥轮换。
 
-每个渠道维护 minimum-supported 与 blocked-build 列表。检测 blocked build 后先保全用户工作和导出能力，再要求更新；不要让强制更新对正在执行的工具硬中断。发布复盘需关联 artifact hash、构建 runner image、SBOM、签名证书序列号、notarization ID、灰度 ring 与观测 dashboard，从一个 crash trace 能反查到完整供应链。
+每个渠道维护 minimum-supported 与 blocked-build 列表。检测 blocked build 后先保全用户工作和导出能力，再要求更新；不要让强制更新对正在执行的工具硬中断。发布复盘应关联 artifact hash、构建 runner image、SBOM、签名证书序列号、notarization ID、灰度 ring 与观测 dashboard。这样可以从 crash trace 追到对应的构建和发布记录。
 
 ## 7. 生产失败模式
 

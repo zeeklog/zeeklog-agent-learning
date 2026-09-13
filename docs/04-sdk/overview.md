@@ -78,7 +78,7 @@ export interface AgentClient {
 
 Session 是可持续上下文；Turn 是一次有终态的执行；Tool Call 是 Turn 内的副作用单元；Event 是事实。`run()` 返回 AsyncIterable 而不是回调，便于取消、背压和组合；也可提供 `runToCompletion()` 便利方法，但它必须复用同一 reducer，不能另写一套语义。
 
-## 4. 能力协商，而非平台猜测
+## 4. 能力协商
 
 ```ts
 type CapabilityDescriptor = {

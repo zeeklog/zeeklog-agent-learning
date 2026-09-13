@@ -1,4 +1,4 @@
-# AI 桌面客户端：边界、选型与总体架构
+# AI 桌面客户端：边界、选型与架构
 
 AI 桌面客户端要明确可信边界、桌面容器和进程分工。本地高权限能力留在受控 Host，Web、Extension 与 IDE 共用的协议放进 SDK。
 
@@ -87,7 +87,7 @@ export interface RuntimeSupervisor {
 
 启动顺序建议固定为：读取不可变 build manifest → 尽早启用 crash reporting → 打开最小配置与租户索引 → 初始化凭据库但不解密全部秘密 → 启动 Runtime 并完成版本/能力握手 → 注册 IPC → 创建窗口 → 恢复 session 快照 → 最后检查更新。若先创建窗口再注册 IPC，首屏可能发出丢失的请求；若握手失败仍开放工作区按钮，用户会得到一串无因果的错误。
 
-关闭也不是直接 `app.quit()`：先广播 `shutdown.requested`，停止接收新 turn；对运行中工具按风险选择等待、checkpoint 或请求取消；提交事件游标与数据库 WAL；撤销 credential lease；优雅停止 Runtime；最后销毁窗口。设置总 deadline，超时后才 forced kill，并在下一次启动产生 `recovery_required`。系统关机、应用更新和用户退出可使用不同 deadline，但都复用同一状态机。
+关闭流程不能只调用 `app.quit()`。先广播 `shutdown.requested`，停止接收新 turn；对运行中工具按风险选择等待、checkpoint 或请求取消；提交事件游标与数据库 WAL；撤销 credential lease；优雅停止 Runtime；最后销毁窗口。设置总 deadline，超时后才 forced kill，并在下一次启动产生 `recovery_required`。系统关机、应用更新和用户退出可使用不同 deadline，但都复用同一状态机。
 
 多窗口不要共享隐式“当前租户/当前 workspace”。每个窗口创建不可伪造的 `windowContextId`，Main 映射到 tenant、session 与 grant；所有 IPC 都从 sender 找 context，拒绝由 Renderer 自报 tenant。辅助预览窗口只拿只读 capability，登录窗口不拿 workspace capability。这样既降低跨窗口 confused-deputy 风险，也让未来支持多组织并行变得可解释。
 

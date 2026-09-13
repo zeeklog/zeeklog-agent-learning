@@ -1,4 +1,4 @@
-# 端到端参考架构：从桌面交互到可治理 Agent 平台
+# 端到端 Agent 平台参考架构
 
 > 这是用于架构评审的厂商无关基线。它不替代具体方案；评审时要逐项写清边界、数据流、状态归属和失败语义。
 
@@ -26,7 +26,7 @@
 
 SLO 是架构输入。若业务接受“重开任务”，可以省掉持久 Workflow；若要求跨天审批后继续，就必须有持久状态、版本化定义和租约。
 
-## 2. 总体分层、信任边界与数据流
+## 2. 分层、信任边界与数据流
 
 ```mermaid
 flowchart LR
@@ -152,7 +152,7 @@ Runtime 是决策中心，但不是所有 I/O 的执行者。推荐拆成：
 - **Artifact Service**：大对象内容寻址、加密、生命周期。
 - **Verifier / Delivery**：按 AcceptanceCriteria 产出 Evidence、Claim Map 与 DeliveryBundle。
 
-核心循环坚持“先记录意图，再做副作用，再记录结果”：
+执行顺序固定为“先记录意图，再做副作用，再记录结果”：
 
 ```ts
 async function execute(command: ToolCommand, deps: Deps): Promise<void> {
@@ -239,7 +239,7 @@ flowchart LR
   SPAN --> METRIC[Metrics / SLO]
 ```
 
-不要“从 Trace 恢复 Run”：采样、脱敏和后端保留都会破坏完整性。也不要把完整 prompt 塞入 span attribute；用受访问控制的 `inputRef + digest`。
+Run 不能从 Trace 恢复，因为采样、脱敏和后端保留都会破坏完整性。span attribute 也不要存完整 prompt；改用受访问控制的 `inputRef + digest`。
 
 ## 4. 一次端到端运行的数据流
 

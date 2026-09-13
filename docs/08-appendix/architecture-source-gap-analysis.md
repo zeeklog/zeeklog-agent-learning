@@ -63,7 +63,7 @@
 | 灰度、兼容与自动回滚 | [交付与演进](../06-platform/delivery-evolution.md) |
 | 上线评审 | [生产检查清单](../07-practice/production-checklists.md) |
 
-## 3. 五个平面，而不是一个 Runtime 进程
+## 3. 五个平面与 Runtime 进程的关系
 
 ```mermaid
 flowchart TB
@@ -106,7 +106,7 @@ flowchart TB
   VP --> E
 ```
 
-拆成五个平面的原因不是组织好看，而是信任职责不同：模型可以提议动作，不能自己授予权限；执行器可以报告退出码，不能自己宣布业务目标完成；Verifier 可以否决交付，不应复用同一份未经检查的模型陈述；运营面可以发布配置，但不能绕过运行时的版本快照。
+五个平面对应不同的信任职责：模型可以提议动作，但不能授予权限；执行器可以报告退出码，但不能宣布业务目标完成；Verifier 可以否决交付，不能复用未经检查的模型陈述；运营面可以发布配置，但不能绕过运行时的版本快照。
 
 ## 4. 数据模型修正：不要把概念基数锁死
 
@@ -412,4 +412,4 @@ Runtime 还依赖一组系统外侧能力，单独看模型循环或任务状态
 7. 演示 SSE 断线恢复、Webhook 重复和 DLQ replay；
 8. 输出 DeliveryBundle，明确区分 `succeeded`、`partial`、`unverified`、`outcome_unknown`。
 
-能完成这组材料，才说明你掌握的是可运营的 Agent Runtime，而不是只会画组件框图。
+完成这组材料后，应能说明 Agent Runtime 如何运营，而不只停留在组件框图层面。

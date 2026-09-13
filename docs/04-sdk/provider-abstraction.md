@@ -72,7 +72,7 @@ type ProviderDescriptor = {
 };
 ```
 
-不要把模型列表和上下文长度硬编码进前端。启动时从企业控制面 + Provider/runtime probe 得到描述符，签名或经受信通道发送，按 TTL 缓存；真正 run 时重新校验关键策略。`describe()` 失败不应清空上一份缓存，而是标 stale 并禁止依赖新能力的操作。
+不要把模型列表和上下文长度硬编码进前端。启动时从企业控制面 + Provider/runtime probe 得到描述符，签名或经受信通道发送，按 TTL 缓存；执行 run 时重新校验关键策略。`describe()` 失败不应清空上一份缓存，而是标 stale 并禁止依赖新能力的操作。
 
 能力是交集：Provider 实现能力、当前模型、SDK/runtime 版本、部署形态、租户策略与用户 grant。比如 SDK 支持 shell，但 Web Runtime 未配置安全执行环境，则 `tool.shell` 是 unavailable；策略禁止时是 policy-denied，UI 要能解释二者差异。
 

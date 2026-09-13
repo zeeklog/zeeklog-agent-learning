@@ -71,7 +71,7 @@ interface ModelProvider {
 
 ### 为什么保留 delta 与 completed 两层事件
 
-UI 需要 delta 获得即时反馈，但 Runtime 的状态转换不能依赖每个字符。`tool.input.delta` 可用于显示“正在构造参数”，真正执行必须等 `tool.requested` 完成并通过 schema 校验。文本 delta 可在 Transport 层合并，usage/completed/failed 不可丢弃。
+UI 需要 delta 获得即时反馈，但 Runtime 的状态转换不能依赖每个字符。`tool.input.delta` 可用于显示“正在构造参数”；执行器只在 `tool.requested` 完成并通过 schema 校验后执行。文本 delta 可在 Transport 层合并，usage/completed/failed 不可丢弃。
 
 ## 4. 正确消费流：取消、终态和资源清理
 
@@ -144,7 +144,7 @@ async function consumeModel(
 }
 ```
 
-`terminalSeen` 表示 Provider 已宣告终态，`terminalCommitted` 表示 Event Store/下游 sink 已确认提交，二者不能混成一个布尔值。`recordProviderDiagnostic` 只写脱敏诊断，不再发布业务事件。`await emit` 会让下游速度反馈到读取端。如果 Provider SDK 无法真正背压，可在 Adapter 使用有界队列，文本 delta 满时合并；绝不能让慢 UI 造成无界内存增长。
+`terminalSeen` 表示 Provider 已宣告终态，`terminalCommitted` 表示 Event Store/下游 sink 已确认提交，二者不能混成一个布尔值。`recordProviderDiagnostic` 只写脱敏诊断，不再发布业务事件。`await emit` 会让下游速度反馈到读取端。如果 Provider SDK 不提供背压，可在 Adapter 使用有界队列，文本 delta 满时合并；不能让慢 UI 造成无界内存增长。
 
 ## 5. 结构化输出是“约束 + 校验 + 修复策略”
 
@@ -220,7 +220,7 @@ type ModelError = {
 - 认证、权限、无效请求、上下文超限：修正输入或配置，不盲重试。
 - rate limit：尊重 `retry-after`，加入 jitter，受 Run deadline/attempt budget 限制。
 - provider unavailable：可在相同 profile 的 fallback model 上重试，但记录模型改变。
-- 流中断：如果已经产生 Tool 请求或部分结果，先由状态机判断，而不是 Adapter 自行重放。
+- 流中断：如果已经产生 Tool 请求或部分结果，由状态机判断是否恢复，Adapter 不自行重放。
 - 用户取消：终态是 cancelled，不应被自动恢复为 running。
 
 ## 7. Provider Adapter 的 Contract Tests

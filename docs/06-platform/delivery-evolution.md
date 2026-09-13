@@ -64,7 +64,7 @@ Shadow 模式调用新 release 但禁止副作用，只比较输出/计划；写
 
 ## 5. 框架与协议持续演进
 
-建立季度 technology radar：Adopt/Trial/Assess/Hold；跟踪官方 release、兼容策略、CVE、license、维护活跃度和 benchmark。MCP/A2A/框架版本精确固定，通过 adapter contract tests 升级；一次只改变一个主要变量。对 AutoGen/Semantic Kernel 等既有资产，采用 strangler：先统一身份/工具/遥测边界，再逐 workflow 迁移到目标框架，禁止“大爆炸重写”。
+每季度维护 technology radar，分为 Adopt/Trial/Assess/Hold，跟踪官方 release、兼容策略、CVE、license、维护活跃度和 benchmark。MCP、A2A 和框架版本精确固定，并通过 adapter contract tests 升级；每次只改变一个主要变量。对 AutoGen、Semantic Kernel 等既有资产，先统一身份、工具和遥测边界，再逐个 workflow 迁移到目标框架，避免一次性重写全部系统。
 
 技术债有预算：adapter N-1 支持期、废弃通知、使用方清单和自动迁移工具。过期 agent/tool 必须有 owner 和自动下线日；无人认领资产默认隔离，不无限在线。
 

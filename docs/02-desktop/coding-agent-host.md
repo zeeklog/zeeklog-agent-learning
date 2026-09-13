@@ -1,10 +1,10 @@
-# Coding Agent 本地主机：从工作区授权到可审计补丁
+# Coding Agent 本地主机：工作区授权与补丁审计
 
 Windows/macOS Coding Agent Host 要同时处理工作区授权、代码索引、进程树、补丁副作用和崩溃恢复。验收重点是安全链能否审计和复现。文中的厂商与 OS 行为于 **2026-08-30** 按官方资料核对；标注为“建议”的内容属于架构推导，不代表操作系统承诺。
 
 ## 1. 工作区生命周期
 
-Coding Agent 的工作区不是一个字符串路径，而是一项有状态租约：
+在 Coding Agent 中，工作区应表示一项有状态租约，而不是裸路径：
 
 ```mermaid
 stateDiagram-v2
@@ -135,7 +135,7 @@ ResumeThread(processInfo.hThread);
 
 用 I/O completion port 监听 `NEW_PROCESS/EXIT_PROCESS/ACTIVE_PROCESS_ZERO`，但微软明确指出除特定 notification-limit 消息外，Job 消息主要是通知，交付并非全都保证；终态仍要 `QueryInformationJobObject` 对账，PID 也要配合打开的 handle 防止复用误判。
 
-ConPTY 是字符模式应用的伪控制台宿主，输入输出通道是 UTF-8；它适合承载 PowerShell、cmd、REPL 和测试 runner 的终端行为。ConPTY 不替代 Job Object：创建 pseudoconsole、准备 `STARTUPINFOEX` 的属性后，仍把真正客户端进程放进 Job。输出 pipe 必须持续读取，否则缓冲区背压可能让子进程看似“卡死”。
+ConPTY 是字符模式应用的伪控制台宿主，输入输出通道是 UTF-8；它适合承载 PowerShell、cmd、REPL 和测试 runner 的终端行为。ConPTY 不替代 Job Object：创建 pseudoconsole、准备 `STARTUPINFOEX` 的属性后，仍把客户端进程放进 Job。输出 pipe 必须持续读取，否则缓冲区背压可能让子进程看似“卡死”。
 
 ```powershell
 # 事故采样：ETW/WPR 是诊断，不是业务审计真相。
@@ -148,7 +148,7 @@ ETW 由 controller、provider、consumer 组成，可动态启停并实时/离�
 
 ### 3.2 Windows：AppContainer 与 Named Pipe ACL
 
-AppContainer/LPAC 是真正的安全边界：token 含 Package SID 与 capability SID，默认限制文件、注册表、网络、凭据和其他进程。它特别适合解析不可信内容或运行低权限分析 worker；但 Coding Agent 需要编译器、包管理器、Git 与用户选择目录，不能假设“套一个 AppContainer 就都能工作”。建议用 broker 模式：
+AppContainer/LPAC 提供进程隔离边界：token 含 Package SID 与 capability SID，默认限制文件、注册表、网络、凭据和其他进程。它适合解析不可信内容或运行低权限分析 worker；但 Coding Agent 需要编译器、包管理器、Git 与用户选择目录，仅启用 AppContainer 并不足以满足这些需求。建议用 broker 模式：
 
 ```mermaid
 flowchart LR

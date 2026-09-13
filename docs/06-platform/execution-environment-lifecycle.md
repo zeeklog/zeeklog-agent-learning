@@ -237,7 +237,7 @@ environment_cross_tenant_canary_violation_total
 
 ## 9. Secret 与网络出口是短期能力
 
-Secret Broker 返回的不是“万能 token”，而是绑定主体、资源、动作、Task、环境 generation、到期时间的短期能力：
+Secret Broker 返回带有明确范围的短期能力，绑定主体、资源、动作、Task、环境 generation 和到期时间：
 
 ```ts
 interface SecretLease {
@@ -272,7 +272,7 @@ async function commitArtifact(input: {
 }
 ```
 
-真正的 fence 必须在接收写入的一侧验证。只在 Worker 启动前检查一次没有意义。对于不能识别 generation 的外部系统，使用幂等键、资源版本条件、查询确认和 reconcile；无法确认的结果进入 `outcome_unknown`。
+接收写入的一侧必须验证 fence；Worker 启动时的单次检查不够。对于不能识别 generation 的外部系统，使用幂等键、资源版本条件、查询确认和 reconcile；无法确认的结果进入 `outcome_unknown`。
 
 详细的队列、公平调度与 Task lease 见[任务控制平面](task-control-plane.md)。
 

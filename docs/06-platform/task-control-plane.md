@@ -1,4 +1,4 @@
-# 任务控制平面：从请求接入到耐久交付
+# 任务控制平面：请求、调度与耐久交付
 
 > 这是**企业参考设计**，不是任何厂商产品的默认实现或 SLA。它针对进程崩溃、客户端断线、重复请求、租约过期和回调失败，给出可解释、可恢复、可对账的处理方式。示例使用 TypeScript 和 PostgreSQL 风格 SQL；实现时要固定数据库、队列和一致性边界。
 
@@ -509,7 +509,7 @@ await db.transaction(async tx => {
 1. 用 PostgreSQL 实现 `POST /tasks`：canonical digest、幂等冲突、预算预留、初始事件和 outbox 同事务。
 2. 实现两租户 WDRR 调度器，构造 100:1 流量并画出每租户 queue-delay 分布。
 3. 实现 `claim/heartbeat/append`，故意冻结旧 Worker，证明新 epoch 后旧 Worker 无法推进。
-4. 实现 SSE 历史到实时的无缝切换，并加入 compaction snapshot 与 `410` 恢复路径。
+4. 实现从历史事件切到实时订阅的 SSE，并加入 compaction snapshot 与 `410` 恢复路径。
 5. 实现签名 webhook、接收方 Inbox、DLQ/replay；在远端成功而响应丢失时进入 reconcile，而不是盲重试。
 6. 给系统增加 `OUTCOME_UNKNOWN` 运维页面：展示请求摘要、effect key、外部引用、最后一次网络证据和允许的人工裁决动作。
 

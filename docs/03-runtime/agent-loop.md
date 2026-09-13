@@ -1,10 +1,10 @@
-# Agent Loop：事件驱动状态机，而不是无限 `while`
+# Agent Loop：事件驱动状态机
 
 Agent 循环负责有限决策和动作提议，Runtime 负责审批、取消、恢复与终止。先看状态机，再看它与 Workflow 引擎的边界。
 
-## 1. Agent 的本质：受约束的策略执行器
+## 1. 受约束的策略执行
 
-Agent 可以抽象为：在状态 `S` 下，根据观测 `O` 和策略（模型 + 硬规则）选择动作 `A`，环境返回新观测，再次决策。模型并不是状态机本身，它只是一个不确定的动作提议器。终止条件、权限、回合上限和状态转移必须由 Runtime 掌握。
+Agent 可以抽象为：在状态 `S` 下，根据观测 `O` 和策略（模型 + 硬规则）选择动作 `A`，环境返回新观测，再次决策。模型负责提出动作，Runtime 管理状态机、终止条件、权限和回合上限；模型输出具有不确定性。
 
 一次可靠循环至少经历：构建上下文 → 调用模型 → 解析结构化输出 → 校验动作 → 执行或请求批准 → 记录结果 → 判断终止。模型输出永远不直接触发副作用。
 
@@ -179,15 +179,15 @@ Outbox worker 用 `commandId` claim 命令、执行后写回结果事件。一�
 
 ### 4.1 把不变量写进模型之外
 
-高级工程实践是先列不变量，再实现状态：每个 Run 最多一个终态；终态不可回到活动态；一个 `callId` 只能对应一个规范化工具调用；工具终态必须引用已有的 dispatch；批准只能消费一次且参数哈希一致；`turn` 只能递增；任何可见 Final 都必须来自已提交事件。每次 `reduce` 后运行断言，发现历史损坏时隔离 Run，而不是“尽量继续”制造新副作用。
+实现时先列出不变量，再写状态模型：每个 Run 最多一个终态；终态不可回到活动态；一个 `callId` 只能对应一个规范化工具调用；工具终态必须引用已有的 dispatch；批准只能消费一次且参数哈希一致；`turn` 只能递增；任何可见 Final 都必须来自已提交事件。每次 `reduce` 后运行断言，发现历史损坏时隔离 Run，避免继续制造新副作用。
 
 事件 schema 也要演进。给 payload 使用显式版本和 upcaster，例如把旧版 `ToolDone { text }` 升级成新版 `ToolFinished { status, content }`，Reducer 只消费当前内存版本。不要修改旧事件；否则同一历史在新旧 worker 上含义不同。未知事件默认暂停并报警，不能静默忽略可能影响权限或终止的事实。
 
-Command ID 应由稳定输入确定，例如 `runId/turn/commandType/index`，而不是每次重放随机生成。执行器保存 command 的 `pending/running/succeeded/failed/unknown`；`unknown` 表示进程可能已完成外部动作但没有收到确认，需要查询或人工处理。这样“重试”成为明确状态转移，而不是 catch 后递归调用。
+Command ID 应由稳定输入确定，例如 `runId/turn/commandType/index`，不要在每次重放时随机生成。执行器保存 command 的 `pending/running/succeeded/failed/unknown`；`unknown` 表示进程可能已完成外部动作但没有收到确认，需要查询或人工处理。这样“重试”就是明确的状态转移，不是 catch 后递归调用。
 
 ### 4.2 错误也要成为领域事件
 
-区分 provider 限流、上下文超限、模型拒绝、参数解析失败、工具业务拒绝、权限拒绝和 Runtime 缺陷。只有策略认定可重试的错误才生成 RetryScheduled，并把 attempt、退避截止时间和预算影响写入事件。模型可以看到经过脱敏、可行动的工具错误，但不应看到内部堆栈。相同错误连续出现时，循环策略应切换方案、请求人工或失败退出，而不是不断把同一句错误喂回模型。
+区分 provider 限流、上下文超限、模型拒绝、参数解析失败、工具业务拒绝、权限拒绝和 Runtime 缺陷。只有策略认定可重试的错误才生成 RetryScheduled，并把 attempt、退避截止时间和预算影响写入事件。模型可以看到经过脱敏、可行动的工具错误，但不应看到内部堆栈。相同错误连续出现时，循环策略应切换方案、请求人工或失败退出，不能反复把同一句错误喂回模型。
 
 ## 5. 模型输出如何进入状态机
 
@@ -212,13 +212,13 @@ type ModelDelta =
 - Final 必须符合输出 schema 或产品完成条件；
 - 连续 N 次同名同参工具调用，触发 loop detector；
 - 连续工具错误应让模型获得结构化失败，达到阈值后失败或降级；
-- 预算耗尽应产生明确 `BudgetExceeded`，而不是伪装成普通回答。
+- 预算耗尽应产生明确 `BudgetExceeded`，不能伪装成普通回答。
 
 可以用标准化参数哈希检测循环：`sha256(toolName + canonicalJson(args))`。注意搜索翻页、轮询状态等调用参数可能相同但语义合理，应允许工具声明 `repeatPolicy`。
 
 ## 7. Handoff、多 Agent 与 Workflow 的边界
 
-Handoff 是“更换下一轮决策策略”，不是启动一个没有父子关系的新聊天。应记录 from/to agent、转交原因、传递的上下文视图和预算。Manager-as-tool 适合主 Agent 保留控制权；handoff 适合领域 Agent 接管后续轮次。
+Handoff 表示“更换下一轮决策策略”，并保留父子关系。应记录 from/to agent、转交原因、传递的上下文视图和预算。Manager-as-tool 适合主 Agent 保留控制权；handoff 适合领域 Agent 接管后续轮次。
 
 Agent Loop 适合短周期、不确定路径的认知决策；Workflow 适合确定的业务阶段、长等待、重试和补偿。常见组合是 Workflow 节点调用 Agent，Agent 产生结构化决策后回到 Workflow。不要让模型自己承担支付、审批链或发布流程的最终状态机。
 

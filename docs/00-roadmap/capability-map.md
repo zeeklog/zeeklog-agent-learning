@@ -76,11 +76,11 @@ flowchart LR
   SEC --> PLATFORM
 ```
 
-关键关系：
+下面几组关系需要分开看：
 
-- **Agent Loop + Workflow**：Loop 决定“下一步做什么”，Workflow 决定“这一步如何可靠地活过失败”。
-- **Context + Memory**：Context 是本次模型调用实际看到的窗口；Memory 是跨 Step/Run 可读取的状态来源，两者不能混为一谈。
-- **Tool + Security**：Tool 不是普通函数调用，而是模型意图穿越信任边界、产生现实副作用的通道。
+- **Agent Loop + Workflow**：Loop 决定“下一步做什么”，Workflow 负责这一步如何在失败后恢复。
+- **Context + Memory**：Context 是本次模型调用实际看到的窗口；Memory 是跨 Step/Run 可读取的状态来源，两者职责不同。
+- **Tool + Security**：Tool 会把模型提出的意图带过信任边界，并可能产生现实副作用。
 - **SDK + Platform**：SDK 承载数据面契约，控制面通过配置、策略和能力描述影响 SDK，但不能把平台内部模型泄漏给各端。
 - **Observability + Eval**：Observability 解释“发生了什么”，Eval 判断“结果是否足够好”；二者通过统一 Run/Trace ID 连接。
 

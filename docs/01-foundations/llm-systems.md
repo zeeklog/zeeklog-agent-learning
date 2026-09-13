@@ -10,7 +10,7 @@
 output ~ Model(modelVersion, normalizedContext, tools, sampling, providerState)
 ```
 
-这里的 `~` 表示从概率分布采样，而不是严格等号。Runtime 想获得可恢复性，必须把**输入、模型版本、工具定义、采样配置、外部状态和产生的事件**记录下来；不能假设“重放一次模型调用就会得到相同结果”。
+`~` 表示从概率分布采样。要支持恢复，Runtime 必须记录**输入、模型版本、工具定义、采样配置、外部状态和产生的事件**；重放模型调用不保证得到相同结果。
 
 ## 2. Token 是预算、延迟和缓存的共同单位
 
@@ -53,7 +53,7 @@ function fitContext(parts: readonly ContextPart[], budget: number): ContextPart[
 }
 ```
 
-生产版本还要处理“部分压缩”：一个检索块可缩短后纳入，而不是只能全选或全丢；并记录每个 part 的 provenance 和淘汰原因，便于 Eval 分析。
+生产版本还要处理“部分压缩”：检索块可以先缩短再纳入；同时记录每个 part 的 provenance 和淘汰原因，供 Eval 分析。
 
 ## 3. Prefill 与 Decode 决定延迟体验
 
@@ -82,7 +82,7 @@ end_to_end      = run_completed_at - run_created_at
 - 在 Adapter 内读写 Provider-specific cache hint，核心 SDK 只暴露通用的 `cachePolicy` 和 usage 事件。
 - 观测 cache read/write tokens 和命中率，不把缓存当作正确性依赖。
 
-## 4. 采样参数不是“创造力旋钮”那么简单
+## 4. 采样参数与可重复性
 
 `temperature`、`top_p` 等控制候选 token 分布，但不同 Provider/模型的支持和语义不完全一致。对 Runtime 来说：
 

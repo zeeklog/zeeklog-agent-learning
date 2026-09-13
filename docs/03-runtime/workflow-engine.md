@@ -1,4 +1,4 @@
-# Durable Workflow：让长任务跨越崩溃、重启与人工等待
+# Durable Workflow：长任务的持久化执行
 
 Durable Workflow 用事件历史和确定性重放处理进程崩溃与人工等待。内容覆盖 Activity、重试、超时、信号、版本和补偿，也比较成熟引擎与轻量自建编排的适用边界。
 
@@ -14,7 +14,7 @@ await sendReceipt(order);
 
 “数据库里存一个 status”只能解决最简单流程。当出现并行分支、计时器、人工审批、子流程、重试和版本升级时，单个状态字段无法表达每一步的输入、尝试次数、因果关系和已完成副作用。
 
-Durable Workflow 的核心不是“任务队列”，而是：**将决定执行进度的事件持久化，通过确定性重放恢复 Workflow 局部状态；所有非确定性 I/O 被隔离成 Activity。** Temporal 的 Workflow Execution 正是这种模型：命令产生的结果进入 Event History，worker 可重放历史恢复到最新位置。
+Durable Workflow 将决定执行进度的事件持久化，通过确定性重放恢复 Workflow 局部状态；所有非确定性 I/O 都隔离到 Activity。Temporal 的 Workflow Execution 采用这种模型：命令产生的结果进入 Event History，worker 可重放历史恢复到最新位置。
 
 ## 2. Workflow、Activity、Event History
 

@@ -101,7 +101,7 @@ Account B
 Account C
 ```
 
-这是整个架构最重要的两级调度关系。
+因此，路由分为两级：New API 选择 Sub2API 实例，Sub2API 再选择具体账号。
 
 ### 2.3 New API 保持单实例
 
@@ -126,7 +126,7 @@ New API 单实例仍然是一个故障点，因此需要配置：
 
 ---
 
-## 3. 总体架构
+## 3. 架构
 
 ![enterprise-ai-gateway-architecture](https://mini-goods.oss-cn-shenzhen.aliyuncs.com/images/1789324524946_rswb7fjn22i.png)
 
@@ -478,7 +478,7 @@ sub2api:session:{session_hash}
 
 ### 8.1 Redis
 
-Sub2API 集群的 Redis 是核心依赖，不只是普通缓存。
+Sub2API 集群用 Redis 保存共享状态，它是运行依赖，不只是缓存。
 
 主要用途：
 
@@ -1088,7 +1088,7 @@ channels:
 
 ---
 
-## 18. 最终架构定位
+## 18. 架构摘要
 
 ```text
 Enterprise AI Gateway
